@@ -8,7 +8,9 @@ export default function About() {
         <div className="intro-content">
           <h2>Built for brands.<br /><span>Ready for the next run.</span></h2>
           <div className="intro-body">
-            <p>Miss Kudi Productions is a Lagos-based garment manufacturing partner for labels that need to produce collections in volume.</p>
+            <p>Miss Kudi Productions is a Lagos‑based garment manufacturing partner for labels that need to produce collections in volume.</p>
+          <p>Founded in 2018, we have grown into a trusted partner for local and international fashion brands, delivering high‑quality garments on time and on budget.</p>
+          <p>Our team combines experienced pattern makers, skilled seamstresses, and dedicated project managers who ensure every piece meets your brand standards.</p>
             <p>Bring your design, print, pattern or technical specifications. We work with you to define the production requirements and manufacture to the scope agreed for your order.</p>
             <Link className="underlined-link" href="#quote">Tell us what you’re making <span>↗</span></Link>
           </div>

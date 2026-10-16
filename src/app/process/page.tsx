@@ -1,5 +1,5 @@
+import Link from "next/link";
 import { steps } from "../data";
-
 export default function Process() {
   return (
     <main>
@@ -18,6 +18,9 @@ export default function Process() {
                 <p>{copy}</p>
               </article>
             ))}
+          </div>
+          <div className="process-cta" style={{ marginTop: "2rem", textAlign: "center" }}>
+            <Link className="button button-dark" href="/quote">Start your project <span>↗</span></Link>
           </div>
         </div>
       </section>
