@@ -197,6 +197,10 @@ export default function FactoryWorkspacePage() {
       name: newArtisan.name.trim(),
       email: newArtisan.email.trim(),
       role: newArtisan.role,
+      accessTier: "staff",
+      branchId: "BR-LOS-YABA",
+      branchName: "Yaba Flagship Production Plant",
+      shiftStatus: "CLOCKED_IN",
       specialty:
         newArtisan.specialty.trim() ||
         `${ARTISAN_ROLE_LABELS[newArtisan.role]} Specialist`,

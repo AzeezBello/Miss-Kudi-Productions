@@ -1,36 +1,35 @@
-# Miss Kudi Productions — B2B Garment Manufacturing & Factory OS
+# Miss Kudi Productions — B2B Garment Manufacturing & Factory Operations OS
 
-A responsive **Next.js 16** website and B2B factory operations suite for **Miss Kudi Productions**, a Lagos‑based garment manufacturer and private‑label production partner. Combines a **minimalist‑luxury** aesthetic (`#556b2f` olive-green & `#f8f5f0` off-white) with high-productivity operational modules adapted from **Nexus Commerce OS**.
+End-to-end B2B garment production platform and **Nexus-powered Factory Operations OS** for **Miss Kudi Productions** (Lagos, Nigeria).
 
-## Productivity Features Adapted from Nexus Commerce OS
-1. **Smart Quote & MOQ Estimator + Printable Production Job Ticket ([`QuoteForm.tsx`](src/app/components/QuoteForm.tsx), [`ProductionJobTicketModal.tsx`](src/app/components/ProductionJobTicketModal.tsx))**:
-   - Live pro-forma unit cost, volume discount tier, fabric yardage (`meters` + 5% cutting wastage allowance), and lead-time estimation.
-   - Idempotent `offlineId` deduplication via `/api/inquiry` and local storage queue.
-   - Instant printable 80mm/A4 **Production Job Ticket (`MKP-YYYYMMDD-XXX`)** with assigned **Pattern Designer**, **Master Tailor Lead**, and **Quality Control (QC) Inspector**.
-2. **Interactive Size-Grading Matrix & Tech-Pack Ratio Calculator ([`src/app/size-charts/page.tsx`](src/app/size-charts/page.tsx))**:
-   - Instant **Inches ↔ Centimeters** toggle and garment category filtering.
-   - Interactive bulk size-ratio planner (`XS` to `XXL`) with preset curves (*Standard Retail Bell Curve*, *Womenswear/Resort*, *Streetwear Boxy*), graded fabric roll yardage calculation, 1-click CSV export, and 1-click transfer to the Quote Form.
-3. **Live 5-Stage Production Order Tracker ([`src/app/tracker/page.tsx`](src/app/tracker/page.tsx))**:
-   - End-to-end visibility across all 5 manufacturing stages: `01 Brief Received` → `02 Pattern & Quote Review` → `03 Sample & Tech Pack Approved` → `04 Sewing Floor & QC Checks` → `05 Finished & Dispatched`.
-   - Tracks pieces sewn, AQL 2.5 Quality Control pass rates, and assigned artisan leads.
-4. **Artisan Specialist Roster — Pattern Designers, Cutting Masters, Tailors & Quality Control ([`src/app/workspace/page.tsx`](src/app/workspace/page.tsx))**:
-   - Replaces retail POS tellers with garment manufacturing specialists: **Pattern Designers**, **Cutting Masters**, **Master Tailors / Sewing Line Leads**, and **Quality Control (QC) Inspectors**.
-   - Includes specialist onboarding modal and printable **End-of-Day Factory QC & Output Z-Report**.
-5. **Fabric & Trim Runway + 1-Click Supplier Auto-PO ([`src/app/workspace/page.tsx`](src/app/workspace/page.tsx))**:
-   - 30-day daily cutting consumption velocity (`meters/day`), days of remaining stock runway (`CRITICAL`, `REORDER SOON`, `HEALTHY`), 1-click Auto-PO issuance (`PO-AUTO-...`) to textile mills, and 1-click PO receiving.
-6. **B2B Fashion Label CRM, Factory OpEx Ledger & Security Audit Trail ([`src/app/workspace/page.tsx`](src/app/workspace/page.tsx))**:
-   - B2B Volume Tiers (*Emerging Label*, *Studio Partner 3%*, *Collection Partner 7%*, *Heritage VIP 12%*) and partner promo codes (`LAGOSVIP10`, `FIRSTBULK5`, `SCALE1000`).
-   - Executive P&L tracking Gross Revenue, Fabric COGS, and Lagos Factory Operating Expenses (*Generator Diesel*, *Artisan Payroll*, *Machine Maintenance*, *EKEDC Utilities*, *QC Packaging*) with 1-click Accounting CSV export and immutable Audit Trail.
+## Key Productivity & Role-Based Features
 
-## Routes
-| Route | Description |
-|-------|-------------|
-| `/` | Home page with 3D hero, capabilities, 5-step workflow, and live MOQ Quote Estimator. |
-| `/quote` | Dedicated quote & pro-forma estimator page with printable Production Job Ticket. |
-| `/size-charts` | Interactive US/Metric (`in`/`cm`) size guide and bulk XS–XXL ratio & fabric calculator. |
-| `/tracker` | Client & factory live 5-stage production order tracker (`MKP-...`). |
-| `/workspace` | Factory Operations OS (Pipeline & QC, Artisan Roster, Fabric Auto-PO, Brand CRM, OpEx & P&L). |
-| `/services` | Detailed list of manufacturing services. |
-| `/process` | Step‑by‑step workflow overview. |
-| `/about` | Company story and team overview. |
-| `/api/inquiry` | Idempotent `GET` / `POST` production inquiry & pro-forma estimation endpoint. |
+### 1. Three-Tier Role-Based Access Control (`superadmin`, `admin`, `staff`)
+- **[`/superadmin`](src/app/superadmin/page.tsx) — Superadmin Multi-Facility HQ Control Center**:
+  - Multi-facility consolidated telemetry across **Yaba Flagship Production Plant**, **Victoria Island Bespoke & Bridal Atelier**, and **Ikeja Bulk Uniform & Industrial Depot**.
+  - Provision & edit factory plants, manage global Clerk staff access tiers (`superadmin`, `admin`, `staff`), verify NeonDB schema tables, and inspect the immutable security audit trail.
+- **[`/dashboard`](src/app/dashboard/page.tsx) — Adaptive Admin & Artisan Staff Dashboard**:
+  - **Factory Admin View (`admin` / `superadmin`)**: Plant-level Revenue, COGS, OpEx, True Net Profit, critical fabric stockout alerts, and production stage velocity.
+  - **Artisan Staff View (`staff`)**: Personal workstation terminal tailored to **Pattern Designers**, **Cutting Masters**, **Master Tailors**, and **Quality Control (QC) Inspectors** with 1-click shift status toggles (`CLOCKED_IN`, `BREAK`, `OFF_SHIFT`) and role-specific batch completion actions.
+- **[`/login`](src/app/login/page.tsx) — Clerk Identity Sign-In & 1-Click Role Switcher**:
+  - Built with password-manager autofill (`autocomplete="username"` / `autocomplete="current-password"`) and 1-click role switching across all 11 pre-provisioned Lagos factory accounts.
+
+### 2. Nexus Commerce OS Modules Adapted for Garment Manufacturing
+1. **Live Production Order Pipeline & Printable Job Ticket (`01_brief` → `05_dispatch`)**: Real-time tracking in [`/tracker`](src/app/tracker/page.tsx) and [`/workspace`](src/app/workspace/page.tsx) with printable Factory Job Tickets & AQL 2.5 QC Passports ([`ProductionJobTicketModal.tsx`](src/app/components/ProductionJobTicketModal.tsx)).
+2. **Artisan Floor Roster**: Replaces retail POS tellers with **Pattern Designers, Cutting Masters, Master Tailors / Sewing Leads, and Quality Control (QC) Inspectors**.
+3. **Fabric & Trim Inventory Velocity + 1-Click Auto-POs**: 30-day meter/piece burn-rate runway, stockout countdowns, and 1-click Supplier Purchase Order generation & receiving.
+4. **Live MOQ, Yardage & Volume Tier Estimator**: Built into [`QuoteForm.tsx`](src/app/components/QuoteForm.tsx) with XS–XXL size breakdown ratios and B2B promo codes (`LAGOSFASHION10`, `BULK500`, `FIRSTSAMPLE`).
+5. **Interactive Size Grading & Fabric Consumption Calculator**: Available on [`/size-charts`](src/app/size-charts/page.tsx) with 1-click sync into the Quote Form.
+6. **True Net Profit, Factory OpEx Ledger & Accounting CSV Export**: Tracks generator diesel, machinery maintenance, artisan payroll, and logistics against production revenue.
+
+### 3. Neon Serverless PostgreSQL & Clerk Integration
+- **SQL Schema**: [`db/neon-schema.sql`](db/neon-schema.sql) defines all 7 production tables (`factory_branches`, `staff_users`, `production_orders`, `fabric_inventory`, `supplier_purchase_orders`, `factory_expenses`, `audit_logs`).
+- **Hybrid Adapter**: [`src/app/lib/neon-clerk.ts`](src/app/lib/neon-clerk.ts) automatically detects `DATABASE_URL` and `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` / `CLERK_SECRET_KEY`, seamlessly falling back to deterministic local persistence when running offline or before credentials are added.
+- **Health & Schema Endpoints**: [`/api/health`](src/app/api/health/route.ts) and [`/api/admin/init-db`](src/app/api/admin/init-db/route.ts).
+
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
