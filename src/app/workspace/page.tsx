@@ -29,6 +29,7 @@ import {
   savePurchaseOrders,
   STAGE_METADATA,
   SupplierPurchaseOrder,
+  UserAccessTier,
 } from "../lib/production-os";
 import {
   ModalDialog,
@@ -61,11 +62,23 @@ export default function FactoryWorkspacePage() {
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const [artisanModalOpen, setArtisanModalOpen] = useState(false);
   const [zReportModalOpen, setZReportModalOpen] = useState(false);
+  const [editingOrder, setEditingOrder] = useState<ProductionOrder | null>(
+    null
+  );
+  const [editingArtisan, setEditingArtisan] = useState<ArtisanStaff | null>(
+    null
+  );
+  const [editingInventoryItem, setEditingInventoryItem] =
+    useState<FabricInventoryItem | null>(null);
+  const [editingClient, setEditingClient] = useState<BrandClientCrm | null>(
+    null
+  );
 
-  // New Artisan form state
+  // New Artisan / Admin form state
   const [newArtisan, setNewArtisan] = useState({
     name: "",
     email: "",
+    accessTier: "staff" as UserAccessTier,
     role: "tailor" as ArtisanRole,
     specialty: "",
     station: "Sewing Line 1",
@@ -188,17 +201,17 @@ export default function FactoryWorkspacePage() {
     showToast(`Logged +${addSewn} sewn & QC-inspected units on ${jobCode}.`);
   };
 
-  // --- Artisan Onboarding Handler ---
+  // --- Artisan / Admin Onboarding & CRUD Handlers ---
   const handleCreateArtisan = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newArtisan.name.trim() || !newArtisan.email.trim()) return;
     const created: ArtisanStaff = {
       id: `art-${Date.now()}`,
       name: newArtisan.name.trim(),
-      email: newArtisan.email.trim(),
+      email: newArtisan.email.trim().toLowerCase(),
       role: newArtisan.role,
-      accessTier: "staff",
-      branchId: "BR-LOS-YABA",
+      accessTier: newArtisan.accessTier,
+      branchId: "br-yaba",
       branchName: "Yaba Flagship Production Plant",
       shiftStatus: "CLOCKED_IN",
       specialty:
@@ -209,7 +222,9 @@ export default function FactoryWorkspacePage() {
       unitsCompletedMonth: 0,
       qcPassRate: 99.0,
       status:
-        newArtisan.role === "pattern_designer"
+        newArtisan.accessTier === "superadmin"
+          ? "Executive HQ"
+          : newArtisan.role === "pattern_designer"
           ? "Pattern Studio"
           : newArtisan.role === "quality_control"
           ? "QC Station"
@@ -218,25 +233,147 @@ export default function FactoryWorkspacePage() {
     const next = [created, ...artisans];
     setArtisans(next);
     saveArtisans(next);
+    fetch("/api/admin/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(created),
+    }).catch(() => {});
     const logs = appendAuditLog({
       action: "artisan.onboarded",
       actor: "Kudi Alabi",
       role: "Production Manager",
       targetRef: created.name,
-      summary: `Onboarded ${created.name} as ${ARTISAN_ROLE_LABELS[created.role]} (${created.station}).`,
+      summary: `Onboarded ${created.name} (${created.accessTier.toUpperCase()} · ${ARTISAN_ROLE_LABELS[created.role]} · ${created.station}).`,
     });
     setAuditLogs(logs);
     setNewArtisan({
       name: "",
       email: "",
+      accessTier: "staff",
       role: "tailor",
       specialty: "",
       station: "Sewing Line 1",
     });
     setArtisanModalOpen(false);
     showToast(
-      `Onboarded ${created.name} (${ARTISAN_ROLE_LABELS[created.role]}) to roster.`
+      `Onboarded ${created.name} (${created.accessTier.toUpperCase()} · ${ARTISAN_ROLE_LABELS[created.role]}) to roster.`
     );
+  };
+
+  const handleSaveArtisanEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingArtisan) return;
+    const next = artisans.map((a) =>
+      a.id === editingArtisan.id ? editingArtisan : a
+    );
+    setArtisans(next);
+    saveArtisans(next);
+    fetch("/api/admin/users", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editingArtisan),
+    }).catch(() => {});
+    const logs = appendAuditLog({
+      action: "rbac.user_updated",
+      actor: "Kudi Alabi",
+      role: "Superadmin / Admin CRUD",
+      targetRef: editingArtisan.email,
+      summary: `Updated ${editingArtisan.name} (${editingArtisan.accessTier.toUpperCase()} · ${ARTISAN_ROLE_LABELS[editingArtisan.role]}).`,
+    });
+    setAuditLogs(logs);
+    setEditingArtisan(null);
+    showToast(`Updated account for ${editingArtisan.name}.`);
+  };
+
+  const handleDeleteArtisan = (art: ArtisanStaff) => {
+    const next = artisans.filter((a) => a.id !== art.id);
+    setArtisans(next);
+    saveArtisans(next);
+    fetch(
+      `/api/admin/users?id=${encodeURIComponent(
+        art.id
+      )}&email=${encodeURIComponent(art.email)}`,
+      { method: "DELETE" }
+    ).catch(() => {});
+    const logs = appendAuditLog({
+      action: "rbac.user_deleted",
+      actor: "Kudi Alabi",
+      role: "Superadmin / Admin CRUD",
+      targetRef: art.email,
+      summary: `Removed ${art.name} (${art.accessTier.toUpperCase()}) from roster.`,
+    });
+    setAuditLogs(logs);
+    showToast(`Removed ${art.name} from roster.`);
+  };
+
+  const handleSaveOrderEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingOrder) return;
+    const updated: ProductionOrder = {
+      ...editingOrder,
+      totalQuoteNgn:
+        editingOrder.exactQuantity * editingOrder.estimatedUnitCostNgn,
+      updatedAt: new Date().toISOString(),
+    };
+    const next = orders.map((o) =>
+      o.jobCode === updated.jobCode ? updated : o
+    );
+    setOrders(next);
+    saveOrders(next);
+    setEditingOrder(null);
+    showToast(`Saved changes to order ${updated.jobCode}.`);
+  };
+
+  const handleDeleteOrder = (jobCode: string) => {
+    const next = orders.filter((o) => o.jobCode !== jobCode);
+    setOrders(next);
+    saveOrders(next);
+    showToast(`Deleted production order ${jobCode}.`);
+  };
+
+  const handleSaveInventoryEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingInventoryItem) return;
+    const next = inventory.map((i) =>
+      i.id === editingInventoryItem.id ? editingInventoryItem : i
+    );
+    setInventory(next);
+    saveInventory(next);
+    setEditingInventoryItem(null);
+    showToast(`Updated material SKU ${editingInventoryItem.sku}.`);
+  };
+
+  const handleDeleteInventoryItem = (id: string, sku: string) => {
+    const next = inventory.filter((i) => i.id !== id);
+    setInventory(next);
+    saveInventory(next);
+    showToast(`Deleted material SKU ${sku}.`);
+  };
+
+  const handleSaveClientEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingClient) return;
+    const next = clients.map((c) =>
+      c.id === editingClient.id ? editingClient : c
+    );
+    setClients(next);
+    saveBrandClients(next);
+    setEditingClient(null);
+    showToast(`Updated B2B brand partner ${editingClient.brandName}.`);
+  };
+
+  const handleDeleteClient = (id: string, brandName: string) => {
+    const next = clients.filter((c) => c.id !== id);
+    setClients(next);
+    saveBrandClients(next);
+    showToast(`Removed ${brandName} from CRM.`);
+  };
+
+  const handleDeleteExpense = (id: string) => {
+    const next = expenses.filter((e) => e.id !== id);
+    setExpenses(next);
+    saveExpenses(next);
+    showToast("Deleted expense entry.");
   };
 
   // --- Fabric Inventory & 1-Click Auto-PO Handlers ---
@@ -735,12 +872,27 @@ export default function FactoryWorkspacePage() {
                           <button
                             type="button"
                             className="mkp-inline-btn"
+                            onClick={() => setEditingOrder(order)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="mkp-inline-btn"
                             onClick={() => {
                               setSelectedTicketOrder(order);
                               setTicketModalOpen(true);
                             }}
                           >
                             Job Ticket 🖨
+                          </button>
+                          <button
+                            type="button"
+                            className="mkp-inline-btn"
+                            style={{ color: "#9e2a2b" }}
+                            onClick={() => handleDeleteOrder(order.jobCode)}
+                          >
+                            Delete
                           </button>
                         </div>
                       </td>
@@ -781,14 +933,14 @@ export default function FactoryWorkspacePage() {
               <table className="size-chart workspace-table">
                 <thead>
                   <tr>
-                    <th>Specialist Name</th>
-                    <th>Factory Role</th>
+                    <th>Specialist / Admin Name</th>
+                    <th>Access Tier &amp; Role</th>
                     <th>Assigned Station / Line</th>
                     <th>Technical Specialty</th>
                     <th>Active Runs</th>
                     <th>Monthly Output</th>
                     <th>QC First-Pass Yield</th>
-                    <th>Floor Status</th>
+                    <th>CRUD Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -801,9 +953,14 @@ export default function FactoryWorkspacePage() {
                         </div>
                       </td>
                       <td>
-                        <span className="mkp-badge mkp-badge-olive">
-                          {ARTISAN_ROLE_LABELS[art.role]}
-                        </span>
+                        <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                          <span className="size-pill-item">
+                            {art.accessTier.toUpperCase()}
+                          </span>
+                          <span className="mkp-badge mkp-badge-olive">
+                            {ARTISAN_ROLE_LABELS[art.role]}
+                          </span>
+                        </div>
                       </td>
                       <td>{art.station}</td>
                       <td style={{ maxWidth: 260 }}>{art.specialty}</td>
@@ -817,7 +974,23 @@ export default function FactoryWorkspacePage() {
                         <strong>{art.qcPassRate.toFixed(1)}%</strong>
                       </td>
                       <td>
-                        <span className="size-pill-item">{art.status}</span>
+                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                          <button
+                            type="button"
+                            className="mkp-inline-btn"
+                            onClick={() => setEditingArtisan(art)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="mkp-inline-btn"
+                            style={{ color: "#9e2a2b" }}
+                            onClick={() => handleDeleteArtisan(art)}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -909,14 +1082,33 @@ export default function FactoryWorkspacePage() {
                         </td>
                         <td>{item.supplierName}</td>
                         <td>
-                          <button
-                            type="button"
-                            className="button button-dark"
-                            style={{ minHeight: 34, padding: "0 12px", fontSize: 10 }}
-                            onClick={() => handleGenerateAutoPo(item)}
-                          >
-                            1-Click Auto-PO <span>↗</span>
-                          </button>
+                          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                            <button
+                              type="button"
+                              className="button button-dark"
+                              style={{ minHeight: 34, padding: "0 12px", fontSize: 10 }}
+                              onClick={() => handleGenerateAutoPo(item)}
+                            >
+                              1-Click Auto-PO <span>↗</span>
+                            </button>
+                            <button
+                              type="button"
+                              className="mkp-inline-btn"
+                              onClick={() => setEditingInventoryItem(item)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              className="mkp-inline-btn"
+                              style={{ color: "#9e2a2b" }}
+                              onClick={() =>
+                                handleDeleteInventoryItem(item.id, item.sku)
+                              }
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -1029,6 +1221,7 @@ export default function FactoryWorkspacePage() {
                     <th>Lifetime Volume</th>
                     <th>Lifetime Production Spend</th>
                     <th>Contract Discount</th>
+                    <th>CRUD Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1059,6 +1252,25 @@ export default function FactoryWorkspacePage() {
                       </td>
                       <td className="mono">
                         <strong>{c.discountRate}% off</strong>
+                      </td>
+                      <td>
+                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                          <button
+                            type="button"
+                            className="mkp-inline-btn"
+                            onClick={() => setEditingClient(c)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="mkp-inline-btn"
+                            style={{ color: "#9e2a2b" }}
+                            onClick={() => handleDeleteClient(c.id, c.brandName)}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -1206,6 +1418,7 @@ export default function FactoryWorkspacePage() {
                     <th>Description</th>
                     <th>Recorded By</th>
                     <th>Amount (NGN)</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1223,6 +1436,16 @@ export default function FactoryWorkspacePage() {
                       <td>{exp.recordedBy}</td>
                       <td className="mono">
                         <strong>₦{exp.amountNgn.toLocaleString()}</strong>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className="mkp-inline-btn"
+                          style={{ color: "#9e2a2b" }}
+                          onClick={() => handleDeleteExpense(exp.id)}
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -1277,26 +1500,31 @@ export default function FactoryWorkspacePage() {
         onClose={() => setTicketModalOpen(false)}
       />
 
-      {/* Onboard New Artisan Modal (Pattern Designer, Tailor, Cutting Master, QC) */}
+      {/* Onboard New Superadmin / Admin / Artisan Modal */}
       <ModalDialog
         open={artisanModalOpen}
         onClose={() => setArtisanModalOpen(false)}
-        title="Onboard Factory Artisan / Technical Specialist"
+        title="Onboard Superadmin, Admin or Technical Specialist"
         maxWidth={540}
       >
         <form className="quote-form" style={{ padding: 0, boxShadow: "none" }} onSubmit={handleCreateArtisan}>
-          <label>
-            Full Name *
-            <input
-              required
-              placeholder="e.g. Adebayo Adeleke"
-              value={newArtisan.name}
-              onChange={(e) =>
-                setNewArtisan((p) => ({ ...p, name: e.target.value }))
-              }
-            />
-          </label>
           <div className="form-row">
+            <label>
+              Access Tier (RBAC) *
+              <select
+                value={newArtisan.accessTier}
+                onChange={(e) =>
+                  setNewArtisan((p) => ({
+                    ...p,
+                    accessTier: e.target.value as UserAccessTier,
+                  }))
+                }
+              >
+                <option value="staff">Staff (Artisan / Specialist)</option>
+                <option value="admin">Admin (Factory Plant Manager)</option>
+                <option value="superadmin">Superadmin (Global HQ)</option>
+              </select>
+            </label>
             <label>
               Specialist Role *
               <select
@@ -1317,6 +1545,34 @@ export default function FactoryWorkspacePage() {
                 <option value="production_manager">Production Manager</option>
               </select>
             </label>
+          </div>
+          <label>
+            Full Name *
+            <input
+              required
+              placeholder="e.g. Adebayo Adeleke"
+              value={newArtisan.name}
+              onChange={(e) =>
+                setNewArtisan((p) => ({ ...p, name: e.target.value }))
+              }
+            />
+          </label>
+          <div className="form-row">
+            <label>
+              Work Email *
+              <input
+                type="email"
+                required
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                placeholder="specialist@misskudi.com"
+                value={newArtisan.email}
+                onChange={(e) =>
+                  setNewArtisan((p) => ({ ...p, email: e.target.value }))
+                }
+              />
+            </label>
             <label>
               Assigned Station / Line *
               <input
@@ -1330,18 +1586,6 @@ export default function FactoryWorkspacePage() {
             </label>
           </div>
           <label>
-            Staff Email *
-            <input
-              type="email"
-              required
-              placeholder="specialist@misskudi.com"
-              value={newArtisan.email}
-              onChange={(e) =>
-                setNewArtisan((p) => ({ ...p, email: e.target.value }))
-              }
-            />
-          </label>
-          <label>
             Technical Specialty &amp; Machinery
             <input
               placeholder="e.g. Gerber CAD Grading, Heavy Denim Lockstitch, or AQL 2.5 Inspection"
@@ -1353,7 +1597,7 @@ export default function FactoryWorkspacePage() {
           </label>
           <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
             <button type="submit" className="button button-dark" style={{ flex: 1 }}>
-              Add Specialist to Roster
+              Add Account to Roster
             </button>
             <button
               type="button"
@@ -1365,6 +1609,409 @@ export default function FactoryWorkspacePage() {
             </button>
           </div>
         </form>
+      </ModalDialog>
+
+      {/* Edit Order Modal */}
+      <ModalDialog
+        open={Boolean(editingOrder)}
+        onClose={() => setEditingOrder(null)}
+        title={`Edit Production Order — ${editingOrder?.jobCode || ""}`}
+        maxWidth={560}
+      >
+        {editingOrder && (
+          <form
+            className="quote-form"
+            style={{ padding: 0, boxShadow: "none" }}
+            onSubmit={handleSaveOrderEdit}
+          >
+            <div className="form-row">
+              <label>
+                Fashion Brand / Client *
+                <input
+                  required
+                  value={editingOrder.company}
+                  onChange={(e) =>
+                    setEditingOrder({ ...editingOrder, company: e.target.value })
+                  }
+                />
+              </label>
+              <label>
+                Exact Quantity (Pieces) *
+                <input
+                  type="number"
+                  min={10}
+                  required
+                  value={editingOrder.exactQuantity}
+                  onChange={(e) =>
+                    setEditingOrder({
+                      ...editingOrder,
+                      exactQuantity: Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
+            </div>
+            <div className="form-row">
+              <label>
+                Unit Rate (NGN ₦) *
+                <input
+                  type="number"
+                  min={500}
+                  required
+                  value={editingOrder.estimatedUnitCostNgn}
+                  onChange={(e) =>
+                    setEditingOrder({
+                      ...editingOrder,
+                      estimatedUnitCostNgn: Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Target Delivery Date
+                <input
+                  type="date"
+                  value={editingOrder.targetDeliveryDate}
+                  onChange={(e) =>
+                    setEditingOrder({
+                      ...editingOrder,
+                      targetDeliveryDate: e.target.value,
+                    })
+                  }
+                />
+              </label>
+            </div>
+            <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+              <button
+                type="submit"
+                className="button button-dark"
+                style={{ flex: 1 }}
+              >
+                Save Order Changes
+              </button>
+              <button
+                type="button"
+                className="button button-light"
+                style={{ border: "1px solid var(--line)" }}
+                onClick={() => setEditingOrder(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+      </ModalDialog>
+
+      {/* Edit Superadmin / Admin / Artisan Modal */}
+      <ModalDialog
+        open={Boolean(editingArtisan)}
+        onClose={() => setEditingArtisan(null)}
+        title={`Edit Account — ${editingArtisan?.name || ""}`}
+        maxWidth={540}
+      >
+        {editingArtisan && (
+          <form
+            className="quote-form"
+            style={{ padding: 0, boxShadow: "none" }}
+            onSubmit={handleSaveArtisanEdit}
+          >
+            <div className="form-row">
+              <label>
+                Access Tier (RBAC) *
+                <select
+                  value={editingArtisan.accessTier}
+                  onChange={(e) =>
+                    setEditingArtisan({
+                      ...editingArtisan,
+                      accessTier: e.target.value as UserAccessTier,
+                    })
+                  }
+                >
+                  <option value="superadmin">Superadmin (Global HQ)</option>
+                  <option value="admin">Admin (Factory Plant Manager)</option>
+                  <option value="staff">Staff (Artisan / Specialist)</option>
+                </select>
+              </label>
+              <label>
+                Specialist Role *
+                <select
+                  value={editingArtisan.role}
+                  onChange={(e) =>
+                    setEditingArtisan({
+                      ...editingArtisan,
+                      role: e.target.value as ArtisanRole,
+                    })
+                  }
+                >
+                  <option value="production_manager">Production Manager</option>
+                  <option value="pattern_designer">Pattern Designer</option>
+                  <option value="cutting_master">Cutting Master</option>
+                  <option value="tailor">Master Tailor / Sewing Lead</option>
+                  <option value="quality_control">
+                    Quality Control (QC) Inspector
+                  </option>
+                </select>
+              </label>
+            </div>
+            <div className="form-row">
+              <label>
+                Full Name *
+                <input
+                  required
+                  value={editingArtisan.name}
+                  onChange={(e) =>
+                    setEditingArtisan({
+                      ...editingArtisan,
+                      name: e.target.value,
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Email *
+                <input
+                  type="email"
+                  required
+                  value={editingArtisan.email}
+                  onChange={(e) =>
+                    setEditingArtisan({
+                      ...editingArtisan,
+                      email: e.target.value,
+                    })
+                  }
+                />
+              </label>
+            </div>
+            <div className="form-row">
+              <label>
+                Station / Office *
+                <input
+                  required
+                  value={editingArtisan.station}
+                  onChange={(e) =>
+                    setEditingArtisan({
+                      ...editingArtisan,
+                      station: e.target.value,
+                    })
+                  }
+                />
+              </label>
+              <label>
+                QC Pass Rate (%)
+                <input
+                  type="number"
+                  step="0.1"
+                  min={50}
+                  max={100}
+                  value={editingArtisan.qcPassRate}
+                  onChange={(e) =>
+                    setEditingArtisan({
+                      ...editingArtisan,
+                      qcPassRate: Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
+            </div>
+            <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+              <button
+                type="submit"
+                className="button button-dark"
+                style={{ flex: 1 }}
+              >
+                Save Account Changes
+              </button>
+              <button
+                type="button"
+                className="button button-light"
+                style={{ border: "1px solid var(--line)" }}
+                onClick={() => setEditingArtisan(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+      </ModalDialog>
+
+      {/* Edit Inventory SKU Modal */}
+      <ModalDialog
+        open={Boolean(editingInventoryItem)}
+        onClose={() => setEditingInventoryItem(null)}
+        title={`Edit Material SKU — ${editingInventoryItem?.sku || ""}`}
+        maxWidth={520}
+      >
+        {editingInventoryItem && (
+          <form
+            className="quote-form"
+            style={{ padding: 0, boxShadow: "none" }}
+            onSubmit={handleSaveInventoryEdit}
+          >
+            <label>
+              Material Name *
+              <input
+                required
+                value={editingInventoryItem.name}
+                onChange={(e) =>
+                  setEditingInventoryItem({
+                    ...editingInventoryItem,
+                    name: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <div className="form-row">
+              <label>
+                Current Stock ({editingInventoryItem.unit}) *
+                <input
+                  type="number"
+                  min={0}
+                  required
+                  value={editingInventoryItem.stockLevel}
+                  onChange={(e) =>
+                    setEditingInventoryItem({
+                      ...editingInventoryItem,
+                      stockLevel: Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Daily Burn Rate ({editingInventoryItem.unit}/day) *
+                <input
+                  type="number"
+                  min={1}
+                  required
+                  value={editingInventoryItem.dailyBurnRate}
+                  onChange={(e) =>
+                    setEditingInventoryItem({
+                      ...editingInventoryItem,
+                      dailyBurnRate: Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
+            </div>
+            <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+              <button
+                type="submit"
+                className="button button-dark"
+                style={{ flex: 1 }}
+              >
+                Save SKU Changes
+              </button>
+              <button
+                type="button"
+                className="button button-light"
+                style={{ border: "1px solid var(--line)" }}
+                onClick={() => setEditingInventoryItem(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+      </ModalDialog>
+
+      {/* Edit Brand Client CRM Modal */}
+      <ModalDialog
+        open={Boolean(editingClient)}
+        onClose={() => setEditingClient(null)}
+        title={`Edit B2B Partner — ${editingClient?.brandName || ""}`}
+        maxWidth={520}
+      >
+        {editingClient && (
+          <form
+            className="quote-form"
+            style={{ padding: 0, boxShadow: "none" }}
+            onSubmit={handleSaveClientEdit}
+          >
+            <div className="form-row">
+              <label>
+                Brand Name *
+                <input
+                  required
+                  value={editingClient.brandName}
+                  onChange={(e) =>
+                    setEditingClient({
+                      ...editingClient,
+                      brandName: e.target.value,
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Partner Tier
+                <select
+                  value={editingClient.tier}
+                  onChange={(e) =>
+                    setEditingClient({
+                      ...editingClient,
+                      tier: e.target.value as BrandClientCrm["tier"],
+                    })
+                  }
+                >
+                  <option value="Emerging Label">Emerging Label</option>
+                  <option value="Studio Partner (3% Off)">
+                    Studio Partner (3% Off)
+                  </option>
+                  <option value="Collection Partner (7% Off)">
+                    Collection Partner (7% Off)
+                  </option>
+                  <option value="Heritage VIP (12% Off)">
+                    Heritage VIP (12% Off)
+                  </option>
+                </select>
+              </label>
+            </div>
+            <div className="form-row">
+              <label>
+                Contact Name
+                <input
+                  value={editingClient.contactName}
+                  onChange={(e) =>
+                    setEditingClient({
+                      ...editingClient,
+                      contactName: e.target.value,
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Discount Rate (%)
+                <input
+                  type="number"
+                  min={0}
+                  max={25}
+                  value={editingClient.discountRate}
+                  onChange={(e) =>
+                    setEditingClient({
+                      ...editingClient,
+                      discountRate: Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
+            </div>
+            <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+              <button
+                type="submit"
+                className="button button-dark"
+                style={{ flex: 1 }}
+              >
+                Save Partner Changes
+              </button>
+              <button
+                type="button"
+                className="button button-light"
+                style={{ border: "1px solid var(--line)" }}
+                onClick={() => setEditingClient(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
       </ModalDialog>
 
       {/* Printable Factory Daily Z-Report Modal */}
