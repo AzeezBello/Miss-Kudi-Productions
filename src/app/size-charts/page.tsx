@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   GARMENT_ESTIMATION_SPECS,
@@ -128,7 +129,6 @@ export default function SizeCharts() {
     GARMENT_ESTIMATION_SPECS[garmentCategory] ||
     GARMENT_ESTIMATION_SPECS["Dresses and womenswear"];
 
-  // Size scale factor for fabric yardage (XS uses ~0.92x, XXL uses ~1.14x)
   const sizeYardageMultipliers: Record<keyof SizeBreakdown, number> = {
     XS: 0.92,
     S: 0.96,
@@ -188,7 +188,7 @@ export default function SizeCharts() {
       updatedAt: new Date().toISOString(),
     });
     setSavedNotice(
-      `Saved ${totalUnits} pcs size ratio! Redirecting to Production Quote Form...`
+      `Saved ${totalUnits} pcs size ratio! Redirecting to Production Quote Studio...`
     );
     setTimeout(() => {
       router.push("/quote");
@@ -197,41 +197,111 @@ export default function SizeCharts() {
 
   return (
     <main>
-      <section className="size-chart-section section-wrap" id="size-charts">
-        <div className="section-heading">
-          <div>
-            <div className="section-kicker">
-              05 / INTERACTIVE SIZE-GRADING &amp; TECH-PACK CALCULATOR
+      {/* Architectural Dark-Olive Editorial Hero Stage */}
+      <section className="marketing-stage-hero">
+        <img
+          src="/images/pattern-cutting-studio.jpg"
+          alt="Victoria Island and Yaba Pattern Studio CAD grading and marker layout"
+          width={1920}
+          height={1080}
+          fetchPriority="high"
+          decoding="async"
+          className="marketing-stage-bg"
+        />
+        <div className="marketing-stage-scrim" aria-hidden="true" />
+
+        <div className="marketing-stage-inner section-wrap">
+          <div className="marketing-stage-grid">
+            <div className="marketing-stage-copy">
+              <div className="hero-fs-badges" style={{ marginBottom: 18 }}>
+                <span className="hero-fs-chip-primary mono">
+                  04 / SIZE-GRADING &amp; MARKER CALCULATOR
+                </span>
+                <span className="hero-fs-chip-outline mono">
+                  XS – XXL NESTED BLOCKS
+                </span>
+              </div>
+
+              <h1 className="hero-fs-title">
+                Size guide &amp;
+                <br />
+                <em>bulk grading matrix.</em>
+              </h1>
+
+              <p className="hero-fs-description">
+                Plan your collection&apos;s XS–XXL size curve, compute exact fabric roll yardage
+                (including 5% cutting table lay tolerance), and push your ratio directly into your
+                Production Quote.
+              </p>
+
+              <div className="hero-fs-actions">
+                <button
+                  type="button"
+                  className="button hero-fs-btn-gold"
+                  onClick={handleSendToQuote}
+                >
+                  Attach {totalUnits.toLocaleString()} Pcs Ratio to Quote <span>↗</span>
+                </button>
+                <button
+                  type="button"
+                  className="button hero-fs-btn-glass"
+                  onClick={handleExportCsv}
+                >
+                  Export Grading CSV <span>↓</span>
+                </button>
+              </div>
             </div>
-            <h2>
-              Size Guide &amp;{" "}
-              <em>Bulk Grading Matrix.</em>
-            </h2>
-          </div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <button
-              type="button"
-              className={`button ${
-                unit === "in" ? "button-dark" : "button-light"
-              }`}
-              style={{ minHeight: 38, padding: "0 14px", border: "1px solid var(--line)" }}
-              onClick={() => setUnit("in")}
-            >
-              Inches (in)
-            </button>
-            <button
-              type="button"
-              className={`button ${
-                unit === "cm" ? "button-dark" : "button-light"
-              }`}
-              style={{ minHeight: 38, padding: "0 14px", border: "1px solid var(--line)" }}
-              onClick={() => setUnit("cm")}
-            >
-              Centimeters (cm)
-            </button>
+
+            <div className="marketing-stage-card">
+              <div className="marketing-stage-card-head mono">
+                <span>LIVE MARKER SUMMARY</span>
+                <span>{unit.toUpperCase()} SPEC</span>
+              </div>
+              <div className="marketing-stage-metrics">
+                <div>
+                  <span className="mono">TOTAL RUN QUANTITY</span>
+                  <strong className="mono">{totalUnits.toLocaleString()} Pcs</strong>
+                  <small>{garmentCategory}</small>
+                </div>
+                <div>
+                  <span className="mono">GRADED FABRIC YARDAGE</span>
+                  <strong className="mono">{totalFabricMeters.toLocaleString()} Meters</strong>
+                  <small>Includes 5% lay wastage</small>
+                </div>
+                <div>
+                  <span className="mono">MEASUREMENT SYSTEM</span>
+                  <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
+                    <button
+                      type="button"
+                      className={`mkp-filter-pill ${unit === "in" ? "active" : ""}`}
+                      onClick={() => setUnit("in")}
+                    >
+                      Inches (in)
+                    </button>
+                    <button
+                      type="button"
+                      className={`mkp-filter-pill ${unit === "cm" ? "active" : ""}`}
+                      onClick={() => setUnit("cm")}
+                    >
+                      CM (cm)
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <a href="#grading-planner" className="marketing-stage-scroll mono">
+                <span>OPEN INTERACTIVE RATIO PLANNER</span>
+                <span>↓</span>
+              </a>
+            </div>
           </div>
         </div>
+      </section>
 
+      <section
+        className="size-chart-section section-wrap"
+        id="grading-planner"
+        style={{ paddingTop: 72, paddingBottom: 96 }}
+      >
         {/* Interactive Bulk Size-Ratio & Fabric Consumption Calculator */}
         <div className="grading-calculator-card">
           <div className="grading-calc-header">
@@ -239,19 +309,18 @@ export default function SizeCharts() {
               <span className="section-kicker mono">
                 VICTORIA ISLAND &amp; YABA PATTERN STUDIO
               </span>
-              <h3 style={{ margin: "6px 0 4px", fontSize: 20 }}>
+              <h2 style={{ margin: "8px 0 6px", fontSize: "clamp(22px, 2.6vw, 30px)" }}>
                 Interactive Bulk Order Ratio &amp; Marker Consumption Planner
-              </h3>
-              <p style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
-                Plan your collection size split (XS–XXL), calculate graded fabric
-                roll requirements, and push directly to your Production Quote.
+              </h2>
+              <p style={{ margin: 0, fontSize: 13, color: "var(--muted)" }}>
+                Adjust individual XS–XXL quantities or apply a retail bell-curve preset.
               </p>
             </div>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <button
                 type="button"
                 className="button button-light"
-                style={{ minHeight: 40, border: "1px solid var(--line)" }}
+                style={{ minHeight: 42, border: "1px solid var(--line)" }}
                 onClick={handleExportCsv}
               >
                 Export Grading CSV <span>↓</span>
@@ -259,7 +328,7 @@ export default function SizeCharts() {
               <button
                 type="button"
                 className="button button-dark"
-                style={{ minHeight: 40 }}
+                style={{ minHeight: 42 }}
                 onClick={handleSendToQuote}
               >
                 Attach Ratio to Quote Inquiry <span>↗</span>
@@ -378,7 +447,7 @@ export default function SizeCharts() {
           </div>
         </div>
 
-        {/* Filter pills for measurement table */}
+        {/* Filter pills & Unit Toggle for measurement table */}
         <div
           style={{
             display: "flex",
@@ -386,13 +455,13 @@ export default function SizeCharts() {
             alignItems: "center",
             gap: 12,
             flexWrap: "wrap",
-            marginTop: 42,
-            marginBottom: 16,
+            marginTop: 48,
+            marginBottom: 18,
           }}
         >
           <p className="size-chart-intro" style={{ margin: 0 }}>
             Standard body &amp; garment block measurements ({unit.toUpperCase()}). Our
-            Pattern Designers grade custom tech packs to your brand’s exact fit block.
+            Pattern Designers grade custom tech packs to your brand&apos;s exact fit block.
           </p>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {[
@@ -415,8 +484,22 @@ export default function SizeCharts() {
           </div>
         </div>
 
+        {/* Responsive Container-Query Table */}
         <div className="table-scroll-wrap">
-          <table className="size-chart">
+          <table
+            className="size-chart responsive-data-table"
+            style={
+              {
+                "--label-1": "'Category'",
+                "--label-2": "'Size'",
+                "--label-3": `'Chest / Bust (${unit})'`,
+                "--label-4": `'Waist (${unit})'`,
+                "--label-5": `'Hip (${unit})'`,
+                "--label-6": `'Garment Length (${unit})'`,
+                "--label-7": "'Allocated Run Qty'",
+              } as React.CSSProperties
+            }
+          >
             <thead>
               <tr>
                 <th>Category</th>
@@ -429,31 +512,48 @@ export default function SizeCharts() {
               </tr>
             </thead>
             <tbody>
-              {filteredRows.map((row, idx) => {
-                const showCategory =
-                  idx === 0 || filteredRows[idx - 1].category !== row.category;
-                return (
-                  <tr key={`${row.category}-${row.size}`}>
-                    <td style={{ fontWeight: showCategory ? 700 : 400 }}>
-                      {showCategory ? row.category : ""}
-                    </td>
-                    <td>
-                      <span className="mkp-badge mkp-badge-olive">
-                        {row.size}
-                      </span>
-                    </td>
-                    <td className="mono">{formatRange(row.chestIn)}</td>
-                    <td className="mono">{formatRange(row.waistIn)}</td>
-                    <td className="mono">{formatRange(row.hipIn)}</td>
-                    <td className="mono">{formatLength(row.garmentLengthIn)}</td>
-                    <td className="mono">
-                      <strong>{breakdown[row.size]} pcs</strong>
-                    </td>
-                  </tr>
-                );
-              })}
+              {filteredRows.map((row) => (
+                <tr key={`${row.category}-${row.size}`}>
+                  <td style={{ fontWeight: 600 }}>{row.category}</td>
+                  <td>
+                    <span className="mkp-badge mkp-badge-olive">{row.size}</span>
+                  </td>
+                  <td className="mono">{formatRange(row.chestIn)}</td>
+                  <td className="mono">{formatRange(row.waistIn)}</td>
+                  <td className="mono">{formatRange(row.hipIn)}</td>
+                  <td className="mono">{formatLength(row.garmentLengthIn)}</td>
+                  <td className="mono">
+                    <strong>{breakdown[row.size]} pcs</strong>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="marketing-bottom-cta-banner">
+          <div>
+            <span className="section-kicker mono" style={{ color: "#d4af37" }}>
+              RATIO READY FOR COSTING?
+            </span>
+            <h3>Push your {totalUnits.toLocaleString()}-piece size breakdown to Quote Studio.</h3>
+            <p>
+              Your custom XS–XXL breakdown and {totalFabricMeters.toLocaleString()}m fabric
+              requirement will pre-fill automatically.
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <button
+              type="button"
+              className="button hero-fs-btn-gold"
+              onClick={handleSendToQuote}
+            >
+              Send Ratio to Quote Form <span>↗</span>
+            </button>
+            <Link className="button hero-fs-btn-glass" href="/services">
+              Explore Capabilities <span>→</span>
+            </Link>
+          </div>
         </div>
       </section>
     </main>

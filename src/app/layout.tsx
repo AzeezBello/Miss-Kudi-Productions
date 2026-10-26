@@ -8,7 +8,7 @@ export const metadata = {
     "Lagos-based B2B garment manufacturing partner for fashion brands. Bulk cut-and-sew, private-label production, CAD pattern grading, and AQL 2.5 quality control.",
   icons: {
     icon: "/images/mk-logo.svg",
-    apple: "/images/mk-logo.jpg",
+    apple: "/images/mk-logo-transparent.png",
   },
 };
 
@@ -22,19 +22,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <footer className="footer no-print">
           <div className="footer-top">
-            <Link href="/" className="wordmark wordmark-footer">
+            <Link href="/" className="wordmark wordmark-footer" aria-label="Miss Kudi Productions Home">
               <img
-                src="/images/mk-logo.jpg"
-                alt="MK Productions Emblem"
-                width={46}
-                height={46}
+                src="/images/mk-logo-light.png"
+                alt="Miss Kudi Productions — Lagos Atelier"
+                width={76}
+                height={76}
                 className="wordmark-logo-img"
-                style={{ width: 46, height: 46, borderColor: "rgba(255, 255, 255, 0.25)" }}
+                style={{ width: 76, height: 76 }}
               />
-              <span className="wordmark-text-stack">
-                <span className="wordmark-main">MISS KUDI</span>
-                <span className="wordmark-sub">PRODUCTIONS</span>
-              </span>
             </Link>
             <p>
               Your designs. Our expertise.
@@ -45,8 +41,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link className="button button-light" href="/size-charts">
                 Size &amp; Grading Matrix <span>⊞</span>
               </Link>
-              <Link className="button button-light" href="/tracker">
-                Track Production Run <span>⌖</span>
+              <Link className="button button-light" href="/services">
+                Explore Capabilities <span>✦</span>
               </Link>
               <Link className="button button-light" href="/quote">
                 Start a production inquiry <span>↗</span>

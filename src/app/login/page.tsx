@@ -123,12 +123,12 @@ export default function LoginPage() {
                     <div style={{ marginBottom: "2rem" }}>
                         <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap", marginBottom: "0.75rem" }}>
                             <img
-                                src="/images/mk-logo.jpg"
-                                alt="MK Productions Emblem"
-                                width={48}
-                                height={48}
+                                src="/images/mk-logo-transparent.png"
+                                alt="Miss Kudi Productions"
+                                width={64}
+                                height={64}
                                 className="wordmark-logo-img"
-                                style={{ width: 48, height: 48 }}
+                                style={{ width: 64, height: 64 }}
                             />
                             <div>
                                 <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
@@ -136,7 +136,7 @@ export default function LoginPage() {
                                     <span className="badge badge-gold">AUTHORIZED ACCESS ONLY</span>
                                 </div>
                                 <div className="mono" style={{ fontSize: "0.72rem", color: "var(--muted)", marginTop: 2 }}>
-                                    MISS KUDI PRODUCTIONS · 1 ALAWODE STREET, LAGOS
+                                    LAGOS GARMENT MANUFACTURING · YABA · VICTORIA ISLAND · IKEJA
                                 </div>
                             </div>
                         </div>
@@ -303,7 +303,7 @@ export default function LoginPage() {
                                     Authorized Accounts ({artisans.length})
                                 </h2>
                                 <p style={{ fontSize: "0.82rem", color: "var(--text-secondary)", marginBottom: "1rem" }}>
-                                    Active Clerk &amp; Neon PostgreSQL accounts registered at 1 Alawode Street, Lagos:
+                                    Active Clerk &amp; Neon PostgreSQL accounts across our Lagos facilities:
                                 </p>
 
                                 {/* Tier 1: Superadmin */}

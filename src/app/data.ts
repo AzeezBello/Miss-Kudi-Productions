@@ -300,6 +300,6 @@ export const productionFaqs: FaqItem[] = [
   {
     question: "How do I track my production run once it enters the factory floor?",
     answer:
-      "Every inquiry and order receives a unique Job Code (e.g., MKP-20261025-841). Enter your Job Code on our Live Order Tracker (/tracker) to inspect real-time progress across all 5 stages, see your assigned Pattern Designer, Master Tailor, and QC Inspector, and download your printable Job Ticket.",
+      "Every inquiry and order receives a unique Job Code (e.g., MKP-20261025-841) along with a printable Production Job Ticket. Our Merchandising & Production Desk provides stage-by-stage milestone updates as your run advances through Pattern Studio, Cutting, Sewing Lines, AQL 2.5 QC, and Dispatch.",
   },
 ];

@@ -3,7 +3,13 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
+  ACCESS_TIER_LABELS,
   appendAuditLog,
+  ARTISAN_ROLE_LABELS,
+  ArtisanStaff,
+  getCurrentSessionUser,
+  INITIAL_ARTISANS,
+  isSuperAdminUser,
   loadOrders,
   ProductionOrder,
   ProductionStage,
@@ -21,6 +27,7 @@ const STAGE_ORDER: ProductionStage[] = [
 ];
 
 export default function ProductionTrackerPage() {
+  const [user, setUser] = useState<ArtisanStaff>(INITIAL_ARTISANS[0]);
   const [orders, setOrders] = useState<ProductionOrder[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("ALL");
@@ -28,10 +35,14 @@ export default function ProductionTrackerPage() {
     null
   );
   const [ticketOpen, setTicketOpen] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
-    const loaded = loadOrders();
-    setOrders(loaded);
+    const syncState = () => {
+      setUser(getCurrentSessionUser());
+      setOrders(loadOrders());
+    };
+    syncState();
 
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -39,8 +50,19 @@ export default function ProductionTrackerPage() {
       if (jobParam) {
         setSearchQuery(jobParam);
       }
+      window.addEventListener("mkp:session-change", syncState);
+      window.addEventListener("mkp:branch-change", syncState);
+      return () => {
+        window.removeEventListener("mkp:session-change", syncState);
+        window.removeEventListener("mkp:branch-change", syncState);
+      };
     }
   }, []);
+
+  const showNotice = (msg: string) => {
+    setNotice(msg);
+    setTimeout(() => setNotice(null), 4000);
+  };
 
   const handleAdvanceStage = (order: ProductionOrder) => {
     const currentIdx = STAGE_ORDER.indexOf(order.stage);
@@ -75,11 +97,42 @@ export default function ProductionTrackerPage() {
     saveOrders(updatedOrders);
     appendAuditLog({
       action: "pipeline.stage_advanced",
-      actor: order.assignedQcInspector,
-      role: "Quality Control (QC)",
+      actor: user.name,
+      role: ACCESS_TIER_LABELS[user.accessTier],
       targetRef: order.jobCode,
       summary: `Advanced ${order.company} (${order.jobCode}) to Stage ${STAGE_METADATA[nextStage].stepNumber}: ${STAGE_METADATA[nextStage].shortLabel}.`,
     });
+    showNotice(
+      `Advanced ${order.jobCode} (${order.company}) to Stage ${STAGE_METADATA[nextStage].stepNumber}: ${STAGE_METADATA[nextStage].shortLabel}.`
+    );
+  };
+
+  const handleIncrementUnits = (order: ProductionOrder, addUnits: number) => {
+    const updatedOrders = orders.map((o) => {
+      if (o.jobCode !== order.jobCode) return o;
+      const nextSewn = Math.min(o.exactQuantity, o.unitsSewn + addUnits);
+      const nextPassed = Math.min(
+        nextSewn,
+        o.unitsPassedQc + Math.max(1, Math.round(addUnits * 0.98))
+      );
+      return {
+        ...o,
+        unitsSewn: nextSewn,
+        unitsPassedQc: nextPassed,
+        updatedAt: new Date().toISOString(),
+      };
+    });
+
+    setOrders(updatedOrders);
+    saveOrders(updatedOrders);
+    appendAuditLog({
+      action: "floor.units_logged",
+      actor: user.name,
+      role: ARTISAN_ROLE_LABELS[user.role],
+      targetRef: order.jobCode,
+      summary: `Logged +${addUnits} sewn & QC-verified units on ${order.jobCode} (${order.company}).`,
+    });
+    showNotice(`Logged +${addUnits} sewn & QC units on ${order.jobCode}.`);
   };
 
   const filtered = orders.filter((o) => {
@@ -96,28 +149,94 @@ export default function ProductionTrackerPage() {
     return matchesStage && matchesQuery;
   });
 
+  const isSuper = isSuperAdminUser(user);
+
   return (
     <main>
-      <section className="section-wrap" style={{ paddingTop: 64, paddingBottom: 96 }}>
+      <section className="section-wrap" style={{ paddingTop: 48, paddingBottom: 96 }}>
+        {/* Internal Staff & Admin Context Header */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 12,
+            flexWrap: "wrap",
+            padding: "12px 16px",
+            marginBottom: 24,
+            background: "#eff3e9",
+            border: "1px solid #c3d2b0",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            <span className="mkp-badge mkp-badge-olive">
+              IN-HOUSE PRODUCTION TRACKER
+            </span>
+            <span style={{ fontSize: 12, fontWeight: 600 }}>
+              Active Operator: <strong>{user.name}</strong> ({ACCESS_TIER_LABELS[user.accessTier]} ·{" "}
+              {ARTISAN_ROLE_LABELS[user.role]})
+            </span>
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <Link
+              href="/dashboard"
+              className="button button-light"
+              style={{ minHeight: 36, padding: "0 12px", border: "1px solid var(--line)" }}
+            >
+              ← Staff / Admin Dashboard
+            </Link>
+            <Link
+              href="/workspace"
+              className="button button-light"
+              style={{ minHeight: 36, padding: "0 12px", border: "1px solid var(--line)" }}
+            >
+              Operations Workspace ⚙
+            </Link>
+            {isSuper && (
+              <Link
+                href="/superadmin"
+                className="button button-dark"
+                style={{ minHeight: 36, padding: "0 12px" }}
+              >
+                Superadmin HQ ★
+              </Link>
+            )}
+          </div>
+        </div>
+
         <div className="section-heading" style={{ marginBottom: 28 }}>
           <div>
-            <div className="section-kicker">
-              06 / LIVE PRODUCTION ORDER TRACKER &amp; 5-STAGE PIPELINE
+            <div className="section-kicker mono">
+              INTERNAL FLOOR PIPELINE · 5-STAGE PRODUCTION ORDER TRACKER
             </div>
             <h2>
-              Track collections from{" "}
+              Manage &amp; track runs from{" "}
               <em>Pattern Studio to Dispatch.</em>
             </h2>
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link className="button button-light" href="/size-charts" style={{ border: "1px solid var(--line)" }}>
-              Size &amp; Grading Matrix <span>⊞</span>
+            <Link
+              className="button button-light"
+              href="/workspace"
+              style={{ border: "1px solid var(--line)" }}
+            >
+              Floor Operations Workspace <span>⚙</span>
             </Link>
-            <Link className="button button-dark" href="/quote">
-              New Production Inquiry <span>↗</span>
+            <Link className="button button-dark" href="/dashboard">
+              Open Station Console <span>⊞</span>
             </Link>
           </div>
         </div>
+
+        {notice && (
+          <div
+            role="status"
+            className="mkp-banner mkp-banner-olive"
+            style={{ marginBottom: 20 }}
+          >
+            <span>✓ {notice}</span>
+          </div>
+        )}
 
         {/* Search & Stage Filter Bar */}
         <div className="tracker-toolbar">
@@ -157,15 +276,27 @@ export default function ProductionTrackerPage() {
         <div className="tracker-cards-stack">
           {filtered.length === 0 ? (
             <div className="mkp-empty-card">
-              <h3>No matching production runs found</h3>
+              <h3>No active production runs in tracker</h3>
               <p>
-                Try clearing your search filter or submit a new production inquiry to generate
-                a live job code.
+                Create a new production run from your Admin Dashboard, Operations Workspace, or
+                Quote intake to track live 5-stage progress here.
               </p>
+              <div style={{ marginTop: 14, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+                <Link href="/dashboard" className="button button-dark">
+                  Go to Staff / Admin Dashboard <span>→</span>
+                </Link>
+                <Link href="/workspace" className="button button-light" style={{ border: "1px solid var(--line)" }}>
+                  Open Operations Workspace <span>⚙</span>
+                </Link>
+              </div>
             </div>
           ) : (
             filtered.map((order) => {
               const currentIdx = STAGE_ORDER.indexOf(order.stage);
+              const canAdvance = currentIdx >= 0 && currentIdx < STAGE_ORDER.length - 1;
+              const nextStageMeta = canAdvance
+                ? STAGE_METADATA[STAGE_ORDER[currentIdx + 1]]
+                : null;
               const sewPct = Math.min(
                 100,
                 Math.round((order.unitsSewn / Math.max(1, order.exactQuantity)) * 100)
@@ -199,6 +330,35 @@ export default function ProductionTrackerPage() {
                     </div>
 
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                      {order.unitsSewn < order.exactQuantity && (
+                        <button
+                          type="button"
+                          className="button button-light"
+                          style={{
+                            minHeight: 38,
+                            padding: "0 12px",
+                            border: "1px solid var(--line)",
+                          }}
+                          onClick={() => handleIncrementUnits(order, 25)}
+                        >
+                          +25 Sewn &amp; QC Units
+                        </button>
+                      )}
+                      {canAdvance && nextStageMeta && (
+                        <button
+                          type="button"
+                          className="button button-light"
+                          style={{
+                            minHeight: 38,
+                            padding: "0 12px",
+                            border: "1px solid var(--ink)",
+                            color: "var(--ink)",
+                          }}
+                          onClick={() => handleAdvanceStage(order)}
+                        >
+                          Advance → {nextStageMeta.shortLabel}
+                        </button>
+                      )}
                       <button
                         type="button"
                         className="button button-dark"

@@ -7,63 +7,14 @@ import {
   steps,
 } from "./data";
 import AnimatedHero from "./components/AnimatedHero";
-import QuoteForm from "./components/QuoteForm";
 
 export default function Home() {
   const [flagshipPlant, ...secondaryPlants] = facilityHighlights;
 
   return (
     <main>
-      <div className="announcement">
-        B2B GARMENT MANUFACTURING · 1 ALAWODE STREET, LAGOS, NIGERIA · 3 PRODUCTION PLANTS · AQL 2.5 QUALITY CERTIFIED
-      </div>
-
-      {/* LAYOUT FAMILY A: Asymmetrical Split Hero + Telemetry Showcase */}
-      <section className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">
-            <span className="eyebrow-line" /> A PRODUCTION PARTNER FOR FASHION BRANDS
-          </p>
-          <h1>
-            Your designs.
-            <br />
-            Our expertise.
-            <br />
-            <em>Production at scale.</em>
-          </h1>
-          <p className="hero-description">
-            We help fashion labels turn approved designs, patterns and technical packs into
-            retail-ready garments. Every run is executed by specialist Pattern Designers, Cutting
-            Masters, Master Tailors and AQL 2.5 Quality Control Inspectors across three Lagos
-            facilities.
-          </p>
-          <div className="hero-actions">
-            <Link className="button button-dark" href="#quote">
-              Instant Quote &amp; Job Ticket <span>↗</span>
-            </Link>
-            <Link
-              className="button button-light"
-              href="/tracker"
-              style={{ border: "1px solid var(--line)" }}
-            >
-              Track Production Run <span>⌖</span>
-            </Link>
-            <Link className="text-link" href="/size-charts">
-              Size &amp; Ratio Calculator <span>→</span>
-            </Link>
-          </div>
-          <div className="hero-note">
-            <span className="status-dot" /> 1 Alawode Street, Lagos, Nigeria · Yaba Flagship Plant,
-            Victoria Island Atelier &amp; Ikeja Export Depot
-          </div>
-        </div>
-        <div className="hero-visual">
-          <AnimatedHero />
-          <div className="vertical-label">
-            MISS KUDI PRODUCTIONS · APPAREL MANUFACTURING
-          </div>
-        </div>
-      </section>
+      {/* LAYOUT FAMILY A: Fullscreen 3D-Perspective Production Journey Hero Slider */}
+      <AnimatedHero />
 
       {/* LAYOUT FAMILY B: Architectural Manifesto + Collapsed Hairline Telemetry Ledger */}
       <section className="intro section-wrap" id="about">
@@ -111,14 +62,14 @@ export default function Home() {
               Every production order is assigned a dedicated{" "}
               <strong>Pattern Designer</strong>, <strong>Cutting Master</strong>,{" "}
               <strong>Master Tailor Lead</strong>, and{" "}
-              <strong>Quality Control Inspector</strong>. Live unit-by-unit progress is visible at
-              every step in your brand&apos;s Order Tracker.
+              <strong>Quality Control Inspector</strong>, with a printable Production Job Ticket
+              generated at intake.
             </p>
             <div style={{ display: "flex", gap: 24, flexWrap: "wrap", marginTop: 12 }}>
               <Link className="underlined-link" href="/about">
                 Explore Our 3 Lagos Facilities <span>↗</span>
               </Link>
-              <Link className="underlined-link" href="#quote">
+              <Link className="underlined-link" href="/quote">
                 Calculate MOQ &amp; Pro-Forma Quote <span>→</span>
               </Link>
             </div>
@@ -262,7 +213,7 @@ export default function Home() {
             </h2>
             <p>
               A transparent 5-stage pipeline connects our Pattern Studio, Cutting Tables, Sewing
-              Lines and Quality Control Bays with live status tracking for your brand.
+              Lines and Quality Control Bays with milestone sign-offs for your brand.
             </p>
           </div>
           <div className="taste-blueprint-steps">
@@ -283,10 +234,10 @@ export default function Home() {
             </Link>
             <Link
               className="button"
-              href="/tracker"
+              href="/quote"
               style={{ border: "1px solid rgba(255,255,255,0.35)", color: "#fff" }}
             >
-              Open Live Order Tracker <span>⌖</span>
+              Configure Production Quote <span>→</span>
             </Link>
           </div>
         </div>
@@ -369,58 +320,93 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 06 / START A CONVERSATION + LIVE QUOTE CALCULATOR */}
-      <section className="quote-section section-wrap" id="quote">
-        <div className="quote-copy">
-          <div className="section-kicker mono">06 / START A CONVERSATION</div>
-          <h2>
-            Have a collection
-            <br />
-            ready for <em>production?</em>
-          </h2>
-          <p>
-            Configure your garment category, volume and size ratio to preview an instant
-            pro-forma estimate, fabric yardage requirement and printable Production Job Ticket.
-          </p>
-          <div className="quote-detail">
-            <span className="detail-mark">↗</span>
-            <div>
-              <strong>Artisan-Led Production Lines</strong>
-              <span>
-                Assigned Pattern Designer · Master Tailor Lead · AQL 2.5 Quality Control
-              </span>
-            </div>
-          </div>
-          <div className="quote-detail">
-            <span className="detail-mark">⌖</span>
-            <div>
-              <strong>1 Alawode Street, Lagos, Nigeria · Global Export Ready</strong>
-              <span>
-                B2B Partner Volume Tiers (3%–18% efficiency) · Live Job Code Tracking
-              </span>
+      {/* 06 / PRODUCTION FAQ & DEDICATED QUOTE STUDIO CTA */}
+      <section className="section-wrap home-conversion-section">
+        <div className="home-conversion-grid">
+          {/* Left: Frequently Asked Production Questions */}
+          <div className="home-faq-column">
+            <div className="section-kicker mono">06 / PRODUCTION FAQS &amp; ONBOARDING</div>
+            <h2 style={{ marginTop: 14, marginBottom: 14 }}>
+              Everything you need to
+              <br />
+              <em>launch your next run.</em>
+            </h2>
+            <p style={{ color: "var(--text-secondary)", fontSize: 13.5, lineHeight: 1.8, marginBottom: 24 }}>
+              Whether you are producing a 50-piece debut capsule or a 5,000-unit retail restock,
+              our merchandising and pattern studios guide every step.
+            </p>
+
+            <div className="faq-accordion-stack">
+              {productionFaqs.map((faq, idx) => (
+                <details
+                  key={faq.question}
+                  name="home-production-faq"
+                  className="mkp-accordion-item"
+                  open={idx === 0}
+                >
+                  <summary className="mkp-accordion-summary">{faq.question}</summary>
+                  <div className="mkp-accordion-content">
+                    <p>{faq.answer}</p>
+                  </div>
+                </details>
+              ))}
             </div>
           </div>
 
-          <div className="faq-accordion-stack" style={{ marginTop: 32 }}>
-            <div className="ticket-label" style={{ marginBottom: 10 }}>
-              FREQUENTLY ASKED PRODUCTION QUESTIONS
-            </div>
-            {productionFaqs.map((faq, idx) => (
-              <details
-                key={faq.question}
-                name="home-production-faq"
-                className="mkp-accordion-item"
-                open={idx === 0}
-              >
-                <summary className="mkp-accordion-summary">{faq.question}</summary>
-                <div className="mkp-accordion-content">
-                  <p>{faq.answer}</p>
+          {/* Right: Dedicated Quote Studio & Grading Matrix Card */}
+          <aside className="home-quote-cta-card" aria-label="Start a Production Quote">
+            <figure className="home-quote-cta-figure">
+              <img
+                src="/images/lagos-atelier-lookbook.jpg"
+                alt="Victoria Island fashion atelier showroom with olive linen blazers and resortwear on brass rail"
+                width={720}
+                height={420}
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="home-quote-cta-badges mono">
+                <span>INSTANT PRO-FORMA QUOTE</span>
+                <span>MOQ 50 – 5,000+ PCS</span>
+              </div>
+            </figure>
+
+            <div className="home-quote-cta-body">
+              <span className="section-kicker mono" style={{ color: "#d4af37" }}>
+                DEDICATED QUOTE &amp; COSTING STUDIO
+              </span>
+              <h3>Ready to cost your collection &amp; generate a Job Ticket?</h3>
+              <p>
+                Use our interactive Quote Calculator to configure your garment category, exact unit
+                volume, and XS–XXL size breakdown. Receive an instant pro-forma estimate, fabric
+                yardage requirement, and printable Factory Job Ticket.
+              </p>
+
+              <div className="home-quote-cta-perks mono">
+                <div>
+                  <span>VOLUME DISCOUNTS</span>
+                  <strong>3% – 18% B2B Tier</strong>
                 </div>
-              </details>
-            ))}
-          </div>
+                <div>
+                  <span>TURNAROUND</span>
+                  <strong>3 – 5 Weeks</strong>
+                </div>
+                <div>
+                  <span>QUALITY STANDARD</span>
+                  <strong>ISO / AQL 2.5</strong>
+                </div>
+              </div>
+
+              <div className="home-quote-cta-actions">
+                <Link className="button hero-fs-btn-gold" href="/quote">
+                  Open Production Quote Studio <span>↗</span>
+                </Link>
+                <Link className="button hero-fs-btn-glass" href="/size-charts">
+                  Size &amp; Ratio Calculator <span>⊞</span>
+                </Link>
+              </div>
+            </div>
+          </aside>
         </div>
-        <QuoteForm />
       </section>
     </main>
   );

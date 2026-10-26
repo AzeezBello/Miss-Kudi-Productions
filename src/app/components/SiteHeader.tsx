@@ -39,6 +39,7 @@ export default function SiteHeader() {
     pathname.startsWith("/workspace") ||
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/superadmin") ||
+    pathname.startsWith("/tracker") ||
     pathname.startsWith("/login");
 
   useEffect(() => {
@@ -129,25 +130,31 @@ export default function SiteHeader() {
     { href: "/services", label: "Services" },
     { href: "/process", label: "Process" },
     { href: "/size-charts", label: "Size & Ratio" },
-    { href: "/tracker", label: "Order Tracker" },
     { href: "/quote", label: "Quote" },
   ];
 
   const internalNavLinks = [
+    ...(isSuper ? [{ href: "/superadmin", label: "★ Superadmin HQ" }] : []),
     {
       href: "/dashboard",
       label:
         user.accessTier === "staff"
           ? `My Station (${ARTISAN_ROLE_LABELS[user.role].split(" ")[0]})`
-          : "Admin Dashboard",
+          : "Admin & Staff Console",
     },
-    ...(isSuper ? [{ href: "/superadmin", label: "Superadmin HQ" }] : []),
     { href: "/workspace", label: "Operations Workspace" },
     { href: "/tracker", label: "Order Tracker" },
-    { href: "/", label: "Public Site ↗" },
   ];
 
   const navLinks = isInternalRoute ? internalNavLinks : publicNavLinks;
+
+  const internalPortalBadge = pathname.startsWith("/superadmin")
+    ? "SUPERADMIN GLOBAL HQ"
+    : pathname.startsWith("/workspace")
+      ? "FACTORY OPERATIONS OS"
+      : pathname.startsWith("/tracker")
+        ? "IN-HOUSE ORDER TRACKER"
+        : "PLANT ADMIN & STAFF CONSOLE";
 
   return (
     <>
@@ -162,16 +169,16 @@ export default function SiteHeader() {
             <div className="rbac-status-group">
               <span className="rbac-pill rbac-pill-ok">
                 <span className="status-dot" />
-                IN-HOUSE STAFF PORTAL
+                IN-HOUSE PRODUCTION OS
               </span>
-              <span className="rbac-pill">
-                {user.accessTier.toUpperCase()} · {ARTISAN_ROLE_LABELS[user.role]}
+              <span className="rbac-pill rbac-pill-tier">
+                {user.name} · {user.accessTier.toUpperCase()} ({ARTISAN_ROLE_LABELS[user.role]})
               </span>
             </div>
 
             <div className="rbac-controls-group">
               <label className="rbac-select-label" htmlFor="global-role-switcher">
-                <span>Role Session:</span>
+                <span>Active Session:</span>
                 <select
                   id="global-role-switcher"
                   className="rbac-select"
@@ -210,7 +217,7 @@ export default function SiteHeader() {
 
               {canManage && (
                 <label className="rbac-select-label" htmlFor="global-branch-switcher">
-                  <span>Facility:</span>
+                  <span>Plant Scope:</span>
                   <select
                     id="global-branch-switcher"
                     className="rbac-select"
@@ -228,7 +235,7 @@ export default function SiteHeader() {
               )}
 
               <Link href="/login" className="rbac-signin-link">
-                Switch Account
+                Switch Account ⇄
               </Link>
             </div>
           </div>
@@ -236,22 +243,33 @@ export default function SiteHeader() {
       )}
 
       {/* Main Navigation Header */}
-      <header className="site-header no-print">
-        <Link href="/" className="wordmark" aria-label="Miss Kudi Productions Home">
-          <img
-            src="/images/mk-logo.jpg"
-            alt="MK Productions Lagos Atelier Crest"
-            width={42}
-            height={42}
-            className="wordmark-logo-img"
-          />
-          <span className="wordmark-text-stack">
-            <span className="wordmark-main">MISS KUDI</span>
-            <span className="wordmark-sub">PRODUCTIONS</span>
-          </span>
-        </Link>
+      <header
+        className={`site-header no-print ${
+          isInternalRoute ? "site-header-internal" : ""
+        }`}
+      >
+        <div className="header-brand-cluster">
+          <Link href="/" className="wordmark" aria-label="Miss Kudi Productions Home">
+            <img
+              src="/images/mk-logo-transparent.png"
+              alt="Miss Kudi Productions — Lagos Atelier"
+              width={64}
+              height={64}
+              className="wordmark-logo-img"
+            />
+          </Link>
+          {isInternalRoute && (
+            <div className="internal-header-context mono">
+              <span className="internal-context-kicker">MISS KUDI PRODUCTIONS</span>
+              <strong className="internal-context-title">{internalPortalBadge}</strong>
+            </div>
+          )}
+        </div>
 
-        <nav className="desktop-nav" aria-label="Primary Navigation">
+        <nav
+          className={`desktop-nav ${isInternalRoute ? "internal-nav-pills" : ""}`}
+          aria-label="Primary Navigation"
+        >
           {navLinks.map((link) => {
             const active =
               link.href === "/"
@@ -271,10 +289,12 @@ export default function SiteHeader() {
 
         <div className="header-actions-group">
           <Link
-            className="button button-dark header-cta desktop-cta"
-            href={isInternalRoute ? "/dashboard" : "/quote"}
+            className={`button ${
+              isInternalRoute ? "button-light internal-exit-btn" : "button-dark"
+            } header-cta desktop-cta`}
+            href={isInternalRoute ? "/" : "/quote"}
           >
-            {isInternalRoute ? "Staff Dashboard" : "Request a Quote"} <span>↗</span>
+            {isInternalRoute ? "Public Website" : "Request a Quote"} <span>↗</span>
           </Link>
 
           <button
@@ -306,20 +326,15 @@ export default function SiteHeader() {
         <div className="mobile-drawer-header">
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <img
-              src="/images/mk-logo.jpg"
-              alt=""
-              width={36}
-              height={36}
+              src="/images/mk-logo-transparent.png"
+              alt="Miss Kudi Productions"
+              width={50}
+              height={50}
               className="wordmark-logo-img"
-              style={{ width: 36, height: 36 }}
+              style={{ width: 50, height: 50 }}
             />
-            <div>
-              <strong id={drawerTitleId} style={{ fontSize: 14, letterSpacing: "0.1em" }}>
-                MISS KUDI PRODUCTIONS
-              </strong>
-              <div style={{ fontSize: 10, color: "var(--muted)", marginTop: 2 }}>
-                {isInternalRoute ? ACCESS_TIER_LABELS[user.accessTier] : "Lagos Garment Manufacturing"}
-              </div>
+            <div id={drawerTitleId} style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", color: "var(--muted)" }}>
+              {isInternalRoute ? ACCESS_TIER_LABELS[user.accessTier] : "LAGOS GARMENT MANUFACTURING"}
             </div>
           </div>
           <button
@@ -391,22 +406,45 @@ export default function SiteHeader() {
         </nav>
 
         <div className="mobile-drawer-footer">
-          <Link
-            href="/quote"
-            className="button button-dark"
-            style={{ width: "100%" }}
-            onClick={() => setDrawerOpen(false)}
-          >
-            Request Production Quote <span>↗</span>
-          </Link>
-          <Link
-            href="/tracker"
-            className="button button-light"
-            style={{ width: "100%", border: "1px solid var(--line)" }}
-            onClick={() => setDrawerOpen(false)}
-          >
-            Track Production Order <span>⌖</span>
-          </Link>
+          {isInternalRoute ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="button button-dark"
+                style={{ width: "100%" }}
+                onClick={() => setDrawerOpen(false)}
+              >
+                Open Staff Dashboard <span>↗</span>
+              </Link>
+              <Link
+                href="/tracker"
+                className="button button-light"
+                style={{ width: "100%", border: "1px solid var(--line)" }}
+                onClick={() => setDrawerOpen(false)}
+              >
+                Internal Order Tracker <span>⌖</span>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/quote"
+                className="button button-dark"
+                style={{ width: "100%" }}
+                onClick={() => setDrawerOpen(false)}
+              >
+                Request Production Quote <span>↗</span>
+              </Link>
+              <Link
+                href="/size-charts"
+                className="button button-light"
+                style={{ width: "100%", border: "1px solid var(--line)" }}
+                onClick={() => setDrawerOpen(false)}
+              >
+                Size &amp; Ratio Calculator <span>⊞</span>
+              </Link>
+            </>
+          )}
         </div>
       </dialog>
 
@@ -469,18 +507,18 @@ export default function SiteHeader() {
               <span>Services</span>
             </Link>
             <Link
+              href="/process"
+              className={`mobile-dock-item ${pathname.startsWith("/process") ? "active" : ""}`}
+            >
+              <span aria-hidden="true">◈</span>
+              <span>Process</span>
+            </Link>
+            <Link
               href="/size-charts"
               className={`mobile-dock-item ${pathname.startsWith("/size-charts") ? "active" : ""}`}
             >
               <span aria-hidden="true">⊞</span>
               <span>Grading</span>
-            </Link>
-            <Link
-              href="/tracker"
-              className={`mobile-dock-item ${pathname.startsWith("/tracker") ? "active" : ""}`}
-            >
-              <span aria-hidden="true">⌖</span>
-              <span>Tracker</span>
             </Link>
             <Link
               href="/quote"

@@ -57,60 +57,93 @@ export default function About() {
 
   return (
     <main>
-      {/* Editorial Hero Banner */}
-      <section className="marketing-hero section-wrap">
-        <div className="marketing-hero-grid">
-          <div>
-            <div className="section-kicker mono">01 / ABOUT MISS KUDI PRODUCTIONS</div>
-            <h1 style={{ marginTop: 16 }}>
-              Built for brands.
-              <br />
-              <em>Engineered for scale in Lagos.</em>
-            </h1>
-            <p className="hero-description" style={{ maxWidth: "56ch" }}>
-              Founded in Lagos, Nigeria, Miss Kudi Productions bridges artisanal fashion
-              craftsmanship with industrial B2B garment manufacturing across three specialized
-              production facilities.
-            </p>
-            <div className="hero-actions">
-              <Link className="button button-dark" href="/quote">
-                Request Production Quote <span>↗</span>
-              </Link>
-              <Link
-                className="button button-light"
-                href="/tracker"
-                style={{ border: "1px solid var(--line)" }}
-              >
-                Track Your Order <span>⌖</span>
-              </Link>
+      {/* Architectural Dark-Olive Editorial Hero Stage */}
+      <section className="marketing-stage-hero">
+        <img
+          src="/images/hero-lagos-atelier.jpg"
+          alt="Miss Kudi Productions flagship Lagos garment atelier with pattern tables and master tailors"
+          width={1920}
+          height={1080}
+          fetchPriority="high"
+          decoding="async"
+          className="marketing-stage-bg"
+        />
+        <div className="marketing-stage-scrim" aria-hidden="true" />
+
+        <div className="marketing-stage-inner section-wrap">
+          <div className="marketing-stage-grid">
+            <div className="marketing-stage-copy">
+              <div className="hero-fs-badges" style={{ marginBottom: 18 }}>
+                <span className="hero-fs-chip-primary mono">
+                  01 / ABOUT MISS KUDI PRODUCTIONS
+                </span>
+                <span className="hero-fs-chip-outline mono">
+                  EST. 2018 · LAGOS, NIGERIA
+                </span>
+              </div>
+
+              <h1 className="hero-fs-title">
+                Built for brands.
+                <br />
+                <em>Engineered for scale in Lagos.</em>
+              </h1>
+
+              <p className="hero-fs-description">
+                Miss Kudi Productions bridges artisanal fashion craftsmanship with industrial B2B
+                garment manufacturing across three specialized Lagos production facilities — giving
+                emerging and established labels predictable quality at scale.
+              </p>
+
+              <div className="hero-fs-actions">
+                <Link className="button hero-fs-btn-gold" href="/quote">
+                  Request Production Quote <span>↗</span>
+                </Link>
+                <Link className="button hero-fs-btn-glass" href="/services">
+                  Explore Capabilities <span>→</span>
+                </Link>
+              </div>
+            </div>
+
+            <div className="marketing-stage-card">
+              <div className="marketing-stage-card-head mono">
+                <span>MULTI-PLANT NETWORK TELEMETRY</span>
+                <span>3 FACILITIES</span>
+              </div>
+              <div className="marketing-stage-metrics">
+                <div>
+                  <span className="mono">MONTHLY CAPACITY</span>
+                  <strong className="mono">35,500+ Pcs</strong>
+                  <small>Yaba · Victoria Island · Ikeja</small>
+                </div>
+                <div>
+                  <span className="mono">INDUSTRIAL MACHINES</span>
+                  <strong className="mono">92+ Stations</strong>
+                  <small>Lockstitch, Overlock &amp; Steam</small>
+                </div>
+                <div>
+                  <span className="mono">QUALITY BENCHMARK</span>
+                  <strong className="mono">99.4% Yield</strong>
+                  <small>ISO / AQL 2.5 36-Point Audit</small>
+                </div>
+              </div>
+              <a href="#philosophy" className="marketing-stage-scroll mono">
+                <span>EXPLORE OUR FACILITIES &amp; TEAMS</span>
+                <span>↓</span>
+              </a>
             </div>
           </div>
-
-          <figure className="marketing-hero-figure">
-            <img
-              src="/images/hero-lagos-atelier.jpg"
-              alt="Miss Kudi Productions flagship Lagos garment atelier with pattern tables and master tailors"
-              width={960}
-              height={680}
-              fetchPriority="high"
-              decoding="async"
-            />
-            <figcaption className="image-caption">
-              <span>HEAD OFFICE: 1 ALAWODE STREET · YABA &amp; VI ATELIER</span>
-              <span className="mono">EST. 2018 · LAGOS, NIGERIA</span>
-            </figcaption>
-          </figure>
         </div>
       </section>
 
       {/* Craftsmanship & Story Triptych */}
       <section
+        id="philosophy"
         className="section-wrap"
-        style={{ paddingTop: 72, paddingBottom: 84, borderTop: "1px solid var(--line)" }}
+        style={{ paddingTop: 84, paddingBottom: 84 }}
       >
         <div className="section-heading">
           <div>
-            <div className="section-kicker mono">OUR MANUFACTURING PHILOSOPHY</div>
+            <div className="section-kicker mono">01 / OUR MANUFACTURING PHILOSOPHY</div>
             <h2>
               Where pattern precision meets
               <br />
@@ -183,8 +216,11 @@ export default function About() {
         </div>
       </section>
 
-      {/* Three Lagos Facilities — Asymmetrical Flagship Spotlight (taste-skill) */}
-      <section className="section-wrap" style={{ paddingTop: 84, paddingBottom: 84, background: "#ebe6dd" }}>
+      {/* Three Lagos Facilities — Asymmetrical Flagship Spotlight */}
+      <section
+        className="section-wrap"
+        style={{ paddingTop: 84, paddingBottom: 84, background: "#ebe6dd" }}
+      >
         <div className="section-heading">
           <div>
             <div className="section-kicker mono">02 / OUR THREE LAGOS PLANTS</div>
@@ -214,7 +250,15 @@ export default function About() {
               <span className="facility-code-badge mono">{flagshipPlant.code}</span>
             </figure>
             <div className="taste-plant-flagship-body">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                  gap: 12,
+                  flexWrap: "wrap",
+                }}
+              >
                 <h3>{flagshipPlant.name}</h3>
                 <span className="facility-location mono">{flagshipPlant.location}</span>
               </div>
@@ -275,30 +319,65 @@ export default function About() {
         <div className="artisan-leadership-grid">
           {PUBLIC_CRAFT_LEADS.map((member) => (
             <article key={member.name} className="artisan-leader-card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 8,
+                  marginBottom: 10,
+                  flexWrap: "wrap",
+                }}
+              >
                 <span className="mkp-badge mkp-badge-olive">{member.role}</span>
                 <span className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>
                   {member.metric}
                 </span>
               </div>
               <h3 style={{ margin: "0 0 4px", fontSize: 18 }}>{member.name}</h3>
-              <div style={{ fontSize: 11.5, color: "var(--ink)", fontWeight: 600, marginBottom: 8 }}>
+              <div
+                style={{
+                  fontSize: 11.5,
+                  color: "var(--ink)",
+                  fontWeight: 600,
+                  marginBottom: 8,
+                }}
+              >
                 {member.facility}
               </div>
-              <p style={{ fontSize: 12.5, color: "var(--muted)", margin: 0, lineHeight: 1.65 }}>
+              <p
+                style={{
+                  fontSize: 12.5,
+                  color: "var(--muted)",
+                  margin: 0,
+                  lineHeight: 1.65,
+                }}
+              >
                 {member.focus}
               </p>
             </article>
           ))}
         </div>
 
-        <div style={{ marginTop: 40, display: "flex", gap: 16, flexWrap: "wrap" }}>
-          <Link className="button button-dark" href="/quote">
-            Start Your Production Brief <span>↗</span>
-          </Link>
-          <Link className="button button-light" href="/services" style={{ border: "1px solid var(--line)" }}>
-            View Production Capabilities <span>→</span>
-          </Link>
+        <div className="marketing-bottom-cta-banner">
+          <div>
+            <span className="section-kicker mono" style={{ color: "#d4af37" }}>
+              PARTNER WITH MISS KUDI PRODUCTIONS
+            </span>
+            <h3>Ready to schedule your collection on our Lagos lines?</h3>
+            <p>
+              Configure your garment category, unit volume, and XS–XXL grading ratio in our Quote
+              Studio for an instant pro-forma estimate.
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <Link className="button hero-fs-btn-gold" href="/quote">
+              Open Production Quote Studio <span>↗</span>
+            </Link>
+            <Link className="button hero-fs-btn-glass" href="/process">
+              Inspect 5-Stage Process <span>→</span>
+            </Link>
+          </div>
         </div>
       </section>
     </main>

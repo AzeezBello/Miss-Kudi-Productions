@@ -78,7 +78,7 @@ export default function SuperadminHqPage() {
     accessTier: "admin" as UserAccessTier,
     role: "production_manager" as ArtisanRole,
     branchId: "br-yaba",
-    station: "Executive HQ · 1 Alawode Street",
+    station: "Executive HQ · Lagos",
     specialty: "Multi-Facility Operations & Production Governance",
     shiftStatus: "CLOCKED_IN" as ArtisanStaff["shiftStatus"],
   });
@@ -115,7 +115,7 @@ export default function SuperadminHqPage() {
         : "tailor";
     const defaultStation =
       presetTier === "superadmin"
-        ? "Executive HQ · 1 Alawode Street"
+        ? "Executive HQ · Lagos"
         : presetTier === "admin"
         ? "Plant Planning Office · Yaba"
         : "Sewing Line 1";
@@ -644,44 +644,6 @@ export default function SuperadminHqPage() {
           aria-label="Superadmin Global HQ Sidebar"
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-            {/* MK Productions Brand Header */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                paddingBottom: 12,
-                borderBottom: "1px solid var(--line)",
-              }}
-            >
-              <img
-                src="/images/mk-logo.jpg"
-                alt="MK Productions Logo"
-                width={38}
-                height={38}
-                className="wordmark-logo-img"
-                style={{ width: 38, height: 38 }}
-              />
-              <div>
-                <div
-                  style={{
-                    fontWeight: 700,
-                    fontSize: 12.5,
-                    letterSpacing: "0.14em",
-                    lineHeight: 1.1,
-                  }}
-                >
-                  MK PRODUCTIONS
-                </div>
-                <div
-                  className="mono"
-                  style={{ fontSize: 9.5, color: "var(--muted)", marginTop: 2 }}
-                >
-                  EXECUTIVE HQ · LAGOS
-                </div>
-              </div>
-            </div>
-
             {/* Identity Card */}
             <div className="sidebar-identity-card">
               <div className="sidebar-identity-top">
@@ -711,7 +673,7 @@ export default function SuperadminHqPage() {
                   className="mono"
                   style={{ fontSize: 10, color: "var(--muted)" }}
                 >
-                  1 Alawode St · Lagos
+                  All Plants · Lagos
                 </span>
               </div>
             </div>
@@ -872,7 +834,7 @@ export default function SuperadminHqPage() {
 
             {/* Quick Provisioning Actions */}
             <div>
-              <div className="sidebar-section-label">QUICK CRUD ACTIONS</div>
+              <div className="sidebar-section-label">QUICK PROVISIONING</div>
               <div className="sidebar-action-stack">
                 <button
                   type="button"
@@ -906,117 +868,142 @@ export default function SuperadminHqPage() {
                   <span>+ Provision Facility Branch</span>
                   <span aria-hidden="true">⌂</span>
                 </button>
-                <button
-                  type="button"
-                  className="sidebar-quick-btn"
-                  onClick={handleVerifyNeonSchema}
-                  disabled={dbVerifying}
-                >
-                  <span>
-                    {dbVerifying
-                      ? "Verifying NeonDB..."
-                      : "Verify NeonDB Schema"}
-                  </span>
-                  <span aria-hidden="true">⚡</span>
-                </button>
               </div>
             </div>
           </div>
 
-          {/* Cross-Portal Links */}
+          {/* System Telemetry Status Footer */}
           <div className="sidebar-footer-card">
             <div className="sidebar-section-label" style={{ marginTop: 0 }}>
-              OPERATIONS PORTALS
+              INFRASTRUCTURE STATUS
             </div>
-            <Link className="sidebar-quick-btn" href="/dashboard">
-              <span>Admin &amp; Staff Console</span>
-              <span aria-hidden="true">→</span>
-            </Link>
-            <Link className="sidebar-quick-btn" href="/workspace">
-              <span>Full Factory OS</span>
-              <span aria-hidden="true">→</span>
-            </Link>
-            <Link className="sidebar-quick-btn" href="/tracker">
-              <span>Live Order Tracker</span>
-              <span aria-hidden="true">→</span>
-            </Link>
-            <Link className="sidebar-quick-btn" href="/login">
-              <span>Switch Account</span>
-              <span aria-hidden="true">⇄</span>
-            </Link>
+            <div
+              className="mono"
+              style={{
+                fontSize: 10.5,
+                lineHeight: 1.6,
+                color: "var(--text-secondary)",
+                background: "#fff",
+                border: "1px solid var(--line)",
+                padding: "10px 12px",
+              }}
+            >
+              <div style={{ color: "var(--ink)", fontWeight: 700 }}>
+                ● NeonDB PostgreSQL Active
+              </div>
+              <div>Clerk RBAC Governance Sync</div>
+              <div>{branches.length} Plants · {artisans.length} Active Accounts</div>
+            </div>
           </div>
         </aside>
 
         {/* MAIN SUPERADMIN WORKSPACE */}
         <section className="dashboard-main">
-          <div className="dashboard-topbar-strip">
-            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-              <button
-                type="button"
-                className="sidebar-toggle-btn"
-                aria-expanded={!sidebarCollapsed}
-                onClick={() => setSidebarCollapsed((prev) => !prev)}
-              >
-                <span aria-hidden="true">☰</span>
-                {sidebarCollapsed ? "Show Sidebar" : "Hide Sidebar"}
-              </button>
-              <span className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>
-                MODULE: <strong>{activeSection.toUpperCase()}</strong>
-              </span>
-            </div>
-            <div className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>
-              HEAD OFFICE: <strong>1 ALAWODE STREET, LAGOS</strong>
-            </div>
-          </div>
-
-          {/* Superadmin Header */}
-          <div className="section-heading" style={{ marginBottom: 24 }}>
-            <div>
-              <div className="section-kicker">
-                SUPERADMIN GLOBAL HQ · NEONDB SERVERLESS &amp; CLERK RBAC CRUD
+          {/* Unified Superadmin Command Topbar & Module Bar */}
+          <div className="superadmin-command-header">
+            <div className="superadmin-topbar-row">
+              <div className="superadmin-topbar-left">
+                <button
+                  type="button"
+                  className="sidebar-toggle-btn"
+                  aria-expanded={!sidebarCollapsed}
+                  onClick={() => setSidebarCollapsed((prev) => !prev)}
+                >
+                  <span aria-hidden="true">☰</span>
+                  {sidebarCollapsed ? "Show Sidebar" : "Hide Sidebar"}
+                </button>
+                <div className="superadmin-breadcrumb mono">
+                  <span>EXECUTIVE HQ</span>
+                  <span aria-hidden="true">/</span>
+                  <strong>{activeSection.toUpperCase()}</strong>
+                </div>
               </div>
-              <h2>
-                Multi-Facility Command &amp;{" "}
-                <em>Superadmin / Admin CRUD.</em>
-              </h2>
+
+              <nav
+                className="superadmin-module-tabs"
+                aria-label="Superadmin Workspace View Switcher"
+              >
+                <button
+                  type="button"
+                  className={`superadmin-module-tab ${
+                    activeSection === "overview" ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    setActiveSection("overview");
+                    setTierFilter("all");
+                  }}
+                >
+                  <span>◈ Overview</span>
+                </button>
+                <button
+                  type="button"
+                  className={`superadmin-module-tab ${
+                    activeSection === "accounts" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveSection("accounts")}
+                >
+                  <span>⊞ RBAC Accounts</span>
+                  <small className="mono">{artisans.length}</small>
+                </button>
+                <button
+                  type="button"
+                  className={`superadmin-module-tab ${
+                    activeSection === "facilities" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveSection("facilities")}
+                >
+                  <span>⌂ Facilities</span>
+                  <small className="mono">{branches.length}</small>
+                </button>
+                <button
+                  type="button"
+                  className={`superadmin-module-tab ${
+                    activeSection === "audit" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveSection("audit")}
+                >
+                  <span>⛨ Audit Trail</span>
+                  <small className="mono">{auditLogs.length}</small>
+                </button>
+              </nav>
             </div>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <button
-                type="button"
-                className="button button-light"
-                style={{ minHeight: 44, border: "1px solid var(--line)" }}
-                onClick={handleVerifyNeonSchema}
-                disabled={dbVerifying}
-              >
-                {dbVerifying
-                  ? "Verifying NeonDB..."
-                  : "Verify NeonDB Schema"}{" "}
-                <span>⚡</span>
-              </button>
-              <button
-                type="button"
-                className="button button-light"
-                style={{ minHeight: 44, border: "1px solid var(--line)" }}
-                onClick={() => openCreateAccountModal("superadmin")}
-              >
-                + New Superadmin <span>★</span>
-              </button>
-              <button
-                type="button"
-                className="button button-light"
-                style={{ minHeight: 44, border: "1px solid var(--line)" }}
-                onClick={() => openCreateAccountModal("admin")}
-              >
-                + New Factory Admin <span>⊞</span>
-              </button>
-              <button
-                type="button"
-                className="button button-dark"
-                style={{ minHeight: 44 }}
-                onClick={() => openCreateAccountModal("staff")}
-              >
-                + New Specialist Account
-              </button>
+
+            <div className="superadmin-title-row">
+              <div className="superadmin-title-copy">
+                <div className="section-kicker mono">
+                  SUPERADMIN GLOBAL HQ · NEONDB SERVERLESS &amp; CLERK RBAC CRUD
+                </div>
+                <h2>
+                  Multi-Facility Command &amp;{" "}
+                  <em>RBAC Governance.</em>
+                </h2>
+              </div>
+
+              <div className="superadmin-action-toolbar">
+                <button
+                  type="button"
+                  className="button button-light"
+                  onClick={handleVerifyNeonSchema}
+                  disabled={dbVerifying}
+                >
+                  {dbVerifying ? "Verifying NeonDB..." : "Verify NeonDB"}{" "}
+                  <span>⚡</span>
+                </button>
+                <button
+                  type="button"
+                  className="button button-light"
+                  onClick={() => setBranchModalOpen(true)}
+                >
+                  + Provision Facility <span>⌂</span>
+                </button>
+                <button
+                  type="button"
+                  className="button button-dark"
+                  onClick={() => openCreateAccountModal("admin")}
+                >
+                  + New RBAC Account <span>★</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1060,7 +1047,7 @@ export default function SuperadminHqPage() {
                 {branches.length} Plants · {totalMachines} Looms
               </div>
               <div className="kpi-sub">
-                Head Office: 1 Alawode Street, Lagos, Nigeria
+                Yaba Flagship · Victoria Island Atelier · Ikeja Export Depot
               </div>
             </div>
 
@@ -1728,7 +1715,7 @@ export default function SuperadminHqPage() {
               <input
                 name="station"
                 required
-                placeholder="e.g. Executive HQ · 1 Alawode Street"
+                placeholder="e.g. Executive HQ · Lagos"
                 value={newStaff.station}
                 onChange={(e) =>
                   setNewStaff((p) => ({ ...p, station: e.target.value }))
