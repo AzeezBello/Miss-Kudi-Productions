@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none" role="img" aria-label="MK Productions Emblem">
+  <!-- Outer Botanical Olive Architectural Seal -->
+  <rect x="4" y="4" width="112" height="112" rx="18" fill="#1F291A" stroke="#C59B27" stroke-width="2.5"/>
+  <!-- Woven Stitch Inner Frame -->
+  <rect x="11" y="11" width="98" height="98" rx="13" stroke="#C59B27" stroke-width="1.2" stroke-dasharray="4 3" stroke-opacity="0.75"/>
+  <!-- Corner Tailor Calibration Marks -->
+  <circle cx="20" cy="20" r="2" fill="#C59B27"/>
+  <circle cx="100" cy="20" r="2" fill="#C59B27"/>
+  <circle cx="20" cy="100" r="2" fill="#C59B27"/>
+  <circle cx="100" cy="100" r="2" fill="#C59B27"/>
+  <!-- Interlocking Editorial "M" + "K" Monogram -->
+  <path d="M24 84V34H33.5L47.5 61.5L61.5 34H71V84H62V49.5L49.5 73.5H45.5L33 49.5V84H24Z" fill="#F8F5F0"/>
+  <path d="M71 34H80V57.5L96.5 34H106.5L88.5 58.5L107.5 84H97L82 63.5L80 66.2V84H71V34Z" fill="#C59B27"/>
+  <!-- Subtle Golden Needle & Thread Baseline -->
+  <line x1="24" y1="93" x2="96" y2="93" stroke="#C59B27" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="60" cy="93" r="2.5" fill="#F8F5F0" stroke="#C59B27" stroke-width="1.2"/>
+</svg>

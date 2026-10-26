@@ -6,6 +6,10 @@ export const metadata = {
   title: "Miss Kudi Productions — B2B Garment Manufacturing in Lagos, Nigeria",
   description:
     "Lagos-based B2B garment manufacturing partner for fashion brands. Bulk cut-and-sew, private-label production, CAD pattern grading, and AQL 2.5 quality control.",
+  icons: {
+    icon: "/images/mk-logo.svg",
+    apple: "/images/mk-logo.jpg",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -19,8 +23,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="footer no-print">
           <div className="footer-top">
             <Link href="/" className="wordmark wordmark-footer">
-              <span className="wordmark-main">MISS KUDI</span>
-              <span className="wordmark-sub">PRODUCTIONS</span>
+              <img
+                src="/images/mk-logo.jpg"
+                alt="MK Productions Emblem"
+                width={46}
+                height={46}
+                className="wordmark-logo-img"
+                style={{ width: 46, height: 46, borderColor: "rgba(255, 255, 255, 0.25)" }}
+              />
+              <span className="wordmark-text-stack">
+                <span className="wordmark-main">MISS KUDI</span>
+                <span className="wordmark-sub">PRODUCTIONS</span>
+              </span>
             </Link>
             <p>
               Your designs. Our expertise.

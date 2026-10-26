@@ -117,12 +117,22 @@ export function ProductionJobTicketModal({
     >
       <div className="job-ticket-sheet" id="printable-job-ticket">
         <div className="job-ticket-top">
-          <div>
-            <div className="wordmark-main" style={{ fontSize: 19 }}>
-              MISS KUDI PRODUCTIONS
-            </div>
-            <div className="wordmark-sub" style={{ marginTop: 3 }}>
-              B2B GARMENT MANUFACTURING · 1 ALAWODE STREET, LAGOS, NIGERIA
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <img
+              src="/images/mk-logo.jpg"
+              alt="MK Productions Emblem"
+              width={44}
+              height={44}
+              className="wordmark-logo-img"
+              style={{ width: 44, height: 44 }}
+            />
+            <div>
+              <div className="wordmark-main" style={{ fontSize: 19 }}>
+                MISS KUDI PRODUCTIONS
+              </div>
+              <div className="wordmark-sub" style={{ marginTop: 3 }}>
+                B2B GARMENT MANUFACTURING · 1 ALAWODE STREET, LAGOS, NIGERIA
+              </div>
             </div>
           </div>
           <div style={{ textAlign: "right" }}>

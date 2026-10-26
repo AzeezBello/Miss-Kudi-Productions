@@ -121,9 +121,24 @@ export default function LoginPage() {
             <div className="container">
                 <div style={{ maxWidth: "1120px", margin: "0 auto" }}>
                     <div style={{ marginBottom: "2rem" }}>
-                        <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap", marginBottom: "0.5rem" }}>
-                            <span className="section-tag" style={{ marginBottom: 0 }}>INTERNAL STAFF &amp; ADMIN AUTHENTICATION</span>
-                            <span className="badge badge-gold">AUTHORIZED ACCESS ONLY</span>
+                        <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap", marginBottom: "0.75rem" }}>
+                            <img
+                                src="/images/mk-logo.jpg"
+                                alt="MK Productions Emblem"
+                                width={48}
+                                height={48}
+                                className="wordmark-logo-img"
+                                style={{ width: 48, height: 48 }}
+                            />
+                            <div>
+                                <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
+                                    <span className="section-tag" style={{ marginBottom: 0 }}>INTERNAL STAFF &amp; ADMIN AUTHENTICATION</span>
+                                    <span className="badge badge-gold">AUTHORIZED ACCESS ONLY</span>
+                                </div>
+                                <div className="mono" style={{ fontSize: "0.72rem", color: "var(--muted)", marginTop: 2 }}>
+                                    MISS KUDI PRODUCTIONS · 1 ALAWODE STREET, LAGOS
+                                </div>
+                            </div>
                         </div>
                         <h1 style={{ fontSize: "clamp(1.85rem, 3.8vw, 2.75rem)" }}>
                             Factory Identity &amp; <span className="text-gold">Operations Portal</span>

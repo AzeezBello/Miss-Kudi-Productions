@@ -644,6 +644,44 @@ export default function SuperadminHqPage() {
           aria-label="Superadmin Global HQ Sidebar"
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            {/* MK Productions Brand Header */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                paddingBottom: 12,
+                borderBottom: "1px solid var(--line)",
+              }}
+            >
+              <img
+                src="/images/mk-logo.jpg"
+                alt="MK Productions Logo"
+                width={38}
+                height={38}
+                className="wordmark-logo-img"
+                style={{ width: 38, height: 38 }}
+              />
+              <div>
+                <div
+                  style={{
+                    fontWeight: 700,
+                    fontSize: 12.5,
+                    letterSpacing: "0.14em",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  MK PRODUCTIONS
+                </div>
+                <div
+                  className="mono"
+                  style={{ fontSize: 9.5, color: "var(--muted)", marginTop: 2 }}
+                >
+                  EXECUTIVE HQ · LAGOS
+                </div>
+              </div>
+            </div>
+
             {/* Identity Card */}
             <div className="sidebar-identity-card">
               <div className="sidebar-identity-top">

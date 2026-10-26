@@ -238,8 +238,17 @@ export default function SiteHeader() {
       {/* Main Navigation Header */}
       <header className="site-header no-print">
         <Link href="/" className="wordmark" aria-label="Miss Kudi Productions Home">
-          <span className="wordmark-main">MISS KUDI</span>
-          <span className="wordmark-sub">PRODUCTIONS</span>
+          <img
+            src="/images/mk-logo.jpg"
+            alt="MK Productions Lagos Atelier Crest"
+            width={42}
+            height={42}
+            className="wordmark-logo-img"
+          />
+          <span className="wordmark-text-stack">
+            <span className="wordmark-main">MISS KUDI</span>
+            <span className="wordmark-sub">PRODUCTIONS</span>
+          </span>
         </Link>
 
         <nav className="desktop-nav" aria-label="Primary Navigation">
@@ -295,12 +304,22 @@ export default function SiteHeader() {
         {...({ closedby: "any" } as React.DialogHTMLAttributes<HTMLDialogElement>)}
       >
         <div className="mobile-drawer-header">
-          <div>
-            <strong id={drawerTitleId} style={{ fontSize: 14, letterSpacing: "0.1em" }}>
-              MISS KUDI PRODUCTIONS
-            </strong>
-            <div style={{ fontSize: 10, color: "var(--muted)", marginTop: 2 }}>
-              {isInternalRoute ? ACCESS_TIER_LABELS[user.accessTier] : "Lagos Garment Manufacturing"}
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <img
+              src="/images/mk-logo.jpg"
+              alt=""
+              width={36}
+              height={36}
+              className="wordmark-logo-img"
+              style={{ width: 36, height: 36 }}
+            />
+            <div>
+              <strong id={drawerTitleId} style={{ fontSize: 14, letterSpacing: "0.1em" }}>
+                MISS KUDI PRODUCTIONS
+              </strong>
+              <div style={{ fontSize: 10, color: "var(--muted)", marginTop: 2 }}>
+                {isInternalRoute ? ACCESS_TIER_LABELS[user.accessTier] : "Lagos Garment Manufacturing"}
+              </div>
             </div>
           </div>
           <button
