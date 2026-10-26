@@ -10,13 +10,15 @@ import AnimatedHero from "./components/AnimatedHero";
 import QuoteForm from "./components/QuoteForm";
 
 export default function Home() {
+  const [flagshipPlant, ...secondaryPlants] = facilityHighlights;
+
   return (
     <main>
       <div className="announcement">
-        B2B GARMENT MANUFACTURING · LAGOS, NIGERIA · 3 PRODUCTION PLANTS · LIVE ORDER TRACKER &amp; FACTORY OS
+        B2B GARMENT MANUFACTURING · LAGOS, NIGERIA · 3 PRODUCTION PLANTS · AQL 2.5 QUALITY CERTIFIED
       </div>
 
-      {/* HERO SECTION */}
+      {/* LAYOUT FAMILY A: Asymmetrical Split Hero + Telemetry Showcase */}
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">
@@ -31,8 +33,9 @@ export default function Home() {
           </h1>
           <p className="hero-description">
             We help fashion labels turn approved designs, patterns and technical packs into
-            retail-ready garments — crafted by specialist Pattern Designers, Cutting Masters,
-            Master Tailors and AQL 2.5 Quality Control Inspectors across three Lagos facilities.
+            retail-ready garments. Every run is executed by specialist Pattern Designers, Cutting
+            Masters, Master Tailors and AQL 2.5 Quality Control Inspectors across three Lagos
+            facilities.
           </p>
           <div className="hero-actions">
             <Link className="button button-dark" href="#quote">
@@ -57,39 +60,47 @@ export default function Home() {
         <div className="hero-visual">
           <AnimatedHero />
           <div className="vertical-label">
-            MISS KUDI PRODUCTIONS — APPAREL MANUFACTURING
+            MISS KUDI PRODUCTIONS · APPAREL MANUFACTURING
           </div>
         </div>
       </section>
 
-      {/* 01 / WHO WE ARE + EDITORIAL SPLIT VISUAL */}
+      {/* LAYOUT FAMILY B: Architectural Manifesto + Collapsed Hairline Telemetry Ledger */}
       <section className="intro section-wrap" id="about">
-        <div className="section-kicker">01 / WHO WE ARE</div>
-        <div className="intro-content">
-          <div>
+        <div className="taste-manifesto-grid">
+          <div className="taste-manifesto-index">
+            <span className="section-kicker mono">01 / MANIFESTO</span>
+            <span className="taste-index-rule" />
+            <span className="mono" style={{ fontSize: 10, color: "var(--muted)" }}>
+              LAGOS · EST. 2018
+            </span>
+          </div>
+
+          <div className="taste-manifesto-statement">
             <h2>
               Built for brands.
               <br />
               <span>Ready for the next run.</span>
             </h2>
-            <div className="editorial-stats-grid" style={{ marginTop: 28 }}>
-              <div className="editorial-stat-card">
+            <div className="taste-hairline-ledger" style={{ marginTop: 32 }}>
+              <div className="taste-ledger-cell">
                 <span className="ticket-label">MONTHLY CAPACITY</span>
                 <strong className="mono">35,500+ Pcs</strong>
                 <small>Across 3 Lagos facilities</small>
               </div>
-              <div className="editorial-stat-card">
+              <div className="taste-ledger-cell">
                 <span className="ticket-label">QUALITY BENCHMARK</span>
                 <strong className="mono">99.4% Yield</strong>
                 <small>AQL 2.5 36-point inspection</small>
               </div>
-              <div className="editorial-stat-card">
+              <div className="taste-ledger-cell">
                 <span className="ticket-label">MOQ FLEXIBILITY</span>
                 <strong className="mono">50 – 5,000+</strong>
                 <small>Units per style (XS–XXL)</small>
               </div>
             </div>
           </div>
+
           <div className="intro-body">
             <p>
               Miss Kudi Productions is an industrial garment manufacturing partner in Lagos,
@@ -100,26 +111,26 @@ export default function Home() {
               Every production order is assigned a dedicated{" "}
               <strong>Pattern Designer</strong>, <strong>Cutting Master</strong>,{" "}
               <strong>Master Tailor Lead</strong>, and{" "}
-              <strong>Quality Control Inspector</strong> — with live unit-by-unit progress
-              visible in your brand&apos;s Order Tracker.
+              <strong>Quality Control Inspector</strong>. Live unit-by-unit progress is visible at
+              every step in your brand&apos;s Order Tracker.
             </p>
-            <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 24, flexWrap: "wrap", marginTop: 12 }}>
               <Link className="underlined-link" href="/about">
                 Explore Our 3 Lagos Facilities <span>↗</span>
               </Link>
-              <Link className="underlined-link" href="/workspace">
-                Open Factory Operations OS <span>→</span>
+              <Link className="underlined-link" href="#quote">
+                Calculate MOQ &amp; Pro-Forma Quote <span>→</span>
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 02 / WHAT WE DO — SEMANTIC <figure> CARDS WITH <img loading="lazy"> */}
+      {/* LAYOUT FAMILY C: 12-Column Asymmetrical Spanning Bento Grid (7+5 / 5+7, 0 Orphan Cells) */}
       <section className="capabilities section-wrap" id="capabilities">
         <div className="section-heading">
           <div>
-            <div className="section-kicker">02 / WHAT WE DO</div>
+            <div className="section-kicker mono">02 / CAPABILITIES BENTO</div>
             <h2>
               Manufacturing that
               <br />
@@ -132,34 +143,44 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="service-grid">
-          {services.map((service) => (
-            <article className="service-card-v2" key={service.number}>
-              <figure className="service-figure">
-                <img
-                  src={service.image}
-                  alt={service.alt}
-                  width={600}
-                  height={440}
-                  loading="lazy"
-                  decoding="async"
-                  className="service-card-img"
-                />
-                <span className="service-number">{service.number}</span>
-                <span className="service-moq-pill mono">{service.moqLabel}</span>
-              </figure>
-              <div className="service-copy">
-                <div className="service-role-kicker">{service.artisanRole}</div>
-                <h3>{service.title}</h3>
-                <p>{service.copy}</p>
-                <ul className="service-deliverables-list">
-                  {service.deliverables.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            </article>
-          ))}
+        <div className="taste-bento-grid">
+          {services.map((service, index) => {
+            const isWide = index === 0 || index === 3;
+            return (
+              <article
+                className={`taste-bento-card ${isWide ? "bento-span-7 bento-horizontal" : "bento-span-5"}`}
+                key={service.number}
+              >
+                <figure className="taste-bento-figure">
+                  <img
+                    src={service.image}
+                    alt={service.alt}
+                    width={640}
+                    height={460}
+                    loading="lazy"
+                    decoding="async"
+                    className="taste-bento-img"
+                  />
+                  <span className="service-number mono">{service.number}</span>
+                  <span className="service-moq-pill mono">{service.moqLabel}</span>
+                </figure>
+                <div className="taste-bento-body">
+                  <div className="service-role-kicker mono">{service.artisanRole}</div>
+                  <h3>{service.title}</h3>
+                  <p>{service.copy}</p>
+                  <ul className="service-deliverables-list">
+                    {service.deliverables.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <div className="taste-bento-footer mono">
+                    <span>{service.leadTimeLabel}</span>
+                    <Link href="/quote">Configure Run →</Link>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
 
         <div
@@ -182,11 +203,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 02B / GARMENT CATEGORIES WE MANUFACTURE */}
-      <section className="section-wrap" style={{ paddingTop: 88, paddingBottom: 88 }}>
+      {/* LAYOUT FAMILY D: Full-Width Editorial Specification Index Ledger */}
+      <section className="section-wrap" style={{ paddingTop: 92, paddingBottom: 92 }}>
         <div className="section-heading">
           <div>
-            <div className="section-kicker">GARMENT SPECIALIZATIONS</div>
+            <div className="section-kicker mono">03 / SILHOUETTE &amp; GSM SPECIFICATION INDEX</div>
             <h2>
               Engineered for every
               <br />
@@ -199,37 +220,40 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="garment-category-grid">
-          {garmentCategories.map((cat) => (
-            <article key={cat.title} className="garment-category-card">
-              <figure className="garment-category-figure">
+        <div className="taste-spec-index-ledger">
+          {garmentCategories.map((cat, idx) => (
+            <article key={cat.title} className="taste-spec-row">
+              <div className="taste-spec-num mono">0{idx + 1}</div>
+              <div className="taste-spec-title-col">
+                <span className="taste-spec-tag mono">{cat.tag}</span>
+                <h3>{cat.title}</h3>
+              </div>
+              <div className="taste-spec-desc-col">
+                <p>{cat.description}</p>
+                <div className="taste-spec-pills mono">
+                  <span>{cat.gsmRange}</span>
+                  <strong>{cat.moq}</strong>
+                </div>
+              </div>
+              <figure className="taste-spec-thumb">
                 <img
                   src={cat.image}
                   alt={cat.alt}
-                  width={540}
-                  height={380}
+                  width={360}
+                  height={240}
                   loading="lazy"
                   decoding="async"
                 />
-                <figcaption className="garment-category-tag mono">{cat.tag}</figcaption>
               </figure>
-              <div className="garment-category-body">
-                <div className="garment-category-meta">
-                  <span>{cat.gsmRange}</span>
-                  <strong className="mono">{cat.moq}</strong>
-                </div>
-                <h3>{cat.title}</h3>
-                <p>{cat.description}</p>
-              </div>
             </article>
           ))}
         </div>
       </section>
 
-      {/* 03 / HOW WE WORK — 5-STAGE PIPELINE */}
+      {/* LAYOUT FAMILY E: Dark Architectural Blueprint Pipeline */}
       <section className="process-section" id="process">
         <div className="process-inner section-wrap">
-          <div className="section-kicker">03 / HOW WE WORK</div>
+          <div className="section-kicker mono">04 / FIVE-STAGE FLOOR PIPELINE</div>
           <div className="process-heading">
             <h2>
               From your brief
@@ -241,10 +265,13 @@ export default function Home() {
               Lines and Quality Control Bays with live status tracking for your brand.
             </p>
           </div>
-          <div className="steps">
+          <div className="taste-blueprint-steps">
             {steps.map(([number, title, copy]) => (
-              <article className="step" key={number}>
-                <span className="step-number">{number}</span>
+              <article className="taste-blueprint-step" key={number}>
+                <div className="taste-blueprint-top mono">
+                  <span>STAGE {number}</span>
+                  <span>AQL GATE ✓</span>
+                </div>
                 <h3>{title}</h3>
                 <p>{copy}</p>
               </article>
@@ -265,58 +292,87 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 03B / THREE LAGOS PRODUCTION FACILITIES */}
+      {/* LAYOUT FAMILY F: Asymmetrical Flagship Spotlight (1 Dominant + 2 Stacked Secondary) */}
       <section
         className="section-wrap"
-        style={{ paddingTop: 88, paddingBottom: 88, background: "#f2ede4" }}
+        style={{ paddingTop: 92, paddingBottom: 92, background: "#f2ede4" }}
       >
         <div className="section-heading">
           <div>
-            <div className="section-kicker">LAGOS MANUFACTURING NETWORK</div>
+            <div className="section-kicker mono">05 / LAGOS MANUFACTURING NETWORK</div>
             <h2>
               Three specialized plants.
               <br />
-              <em>One unified Factory OS.</em>
+              <em>One unified quality standard.</em>
             </h2>
           </div>
           <p>
-            Every facility is connected to our Neon Serverless + Clerk RBAC production telemetry
-            for real-time visibility.
+            Dedicated facilities across Yaba, Victoria Island and Ikeja for pattern development,
+            bulk sewing and export finishing.
           </p>
         </div>
 
-        <div className="facility-showcase-grid">
-          {facilityHighlights.map((plant) => (
-            <article key={plant.code} className="facility-showcase-card">
-              <figure className="facility-figure">
-                <img
-                  src={plant.image}
-                  alt={plant.alt}
-                  width={600}
-                  height={380}
-                  loading="lazy"
-                  decoding="async"
-                />
-                <span className="facility-code-badge mono">{plant.code}</span>
-              </figure>
-              <div className="facility-card-body">
-                <h3>{plant.name}</h3>
-                <p className="facility-location">{plant.location}</p>
-                <p>{plant.focus}</p>
-                <div className="facility-metrics-row">
-                  <span>{plant.machines}</span>
-                  <strong className="mono">{plant.monthlyCapacity}</strong>
-                </div>
+        <div className="taste-plant-spotlight-grid">
+          {/* Dominant Left Flagship Plant */}
+          <article className="taste-plant-flagship">
+            <figure className="taste-plant-flagship-figure">
+              <img
+                src={flagshipPlant.image}
+                alt={flagshipPlant.alt}
+                width={840}
+                height={520}
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="facility-code-badge mono">{flagshipPlant.code}</span>
+            </figure>
+            <div className="taste-plant-flagship-body">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
+                <h3>{flagshipPlant.name}</h3>
+                <span className="facility-location mono">{flagshipPlant.location}</span>
               </div>
-            </article>
-          ))}
+              <p>{flagshipPlant.focus}</p>
+              <div className="facility-metrics-row mono">
+                <span>{flagshipPlant.machines}</span>
+                <strong>{flagshipPlant.monthlyCapacity}</strong>
+              </div>
+            </div>
+          </article>
+
+          {/* Stacked Right Atelier & Finishing Depot */}
+          <div className="taste-plant-secondary-stack">
+            {secondaryPlants.map((plant) => (
+              <article key={plant.code} className="taste-plant-secondary-card">
+                <figure className="taste-plant-secondary-figure">
+                  <img
+                    src={plant.image}
+                    alt={plant.alt}
+                    width={420}
+                    height={300}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span className="facility-code-badge mono">{plant.code}</span>
+                </figure>
+                <div className="taste-plant-secondary-body">
+                  <span className="facility-location mono">{plant.location}</span>
+                  <h3>{plant.name}</h3>
+                  <p>{plant.focus}</p>
+                  <div className="facility-metrics-row mono">
+                    <span>{plant.machines}</span>
+                    <strong>{plant.monthlyCapacity}</strong>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* 04 / START A CONVERSATION + LIVE QUOTE CALCULATOR */}
+      {/* 06 / START A CONVERSATION + LIVE QUOTE CALCULATOR */}
       <section className="quote-section section-wrap" id="quote">
         <div className="quote-copy">
-          <div className="section-kicker">04 / START A CONVERSATION</div>
+          <div className="section-kicker mono">06 / START A CONVERSATION</div>
           <h2>
             Have a collection
             <br />
@@ -345,7 +401,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Native Exclusive Accordion FAQ — modern-web-guidance: html (<details name="...">) */}
           <div className="faq-accordion-stack" style={{ marginTop: 32 }}>
             <div className="ticket-label" style={{ marginBottom: 10 }}>
               FREQUENTLY ASKED PRODUCTION QUESTIONS

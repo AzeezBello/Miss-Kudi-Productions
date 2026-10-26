@@ -34,6 +34,13 @@ export default function SiteHeader() {
   );
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // Strict boundary: Internal in-house portals vs. Public marketing/client pages
+  const isInternalRoute =
+    pathname.startsWith("/workspace") ||
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/superadmin") ||
+    pathname.startsWith("/login");
+
   useEffect(() => {
     const syncState = () => {
       setArtisans(loadArtisans());
@@ -116,11 +123,17 @@ export default function SiteHeader() {
   const isSuper = isSuperAdminUser(user);
   const canManage = canManageFactory(user);
 
-  const navLinks = [
+  const publicNavLinks = [
     { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
     { href: "/services", label: "Services" },
+    { href: "/process", label: "Process" },
     { href: "/size-charts", label: "Size & Ratio" },
     { href: "/tracker", label: "Order Tracker" },
+    { href: "/quote", label: "Quote" },
+  ];
+
+  const internalNavLinks = [
     {
       href: "/dashboard",
       label:
@@ -129,9 +142,12 @@ export default function SiteHeader() {
           : "Admin Dashboard",
     },
     ...(isSuper ? [{ href: "/superadmin", label: "Superadmin HQ" }] : []),
-    { href: "/workspace", label: "Factory OS" },
-    { href: "/quote", label: "Quote" },
+    { href: "/workspace", label: "Operations Workspace" },
+    { href: "/tracker", label: "Order Tracker" },
+    { href: "/", label: "Public Site ↗" },
   ];
+
+  const navLinks = isInternalRoute ? internalNavLinks : publicNavLinks;
 
   return (
     <>
@@ -139,115 +155,106 @@ export default function SiteHeader() {
         Skip to main content
       </a>
 
-      {/* Top Clerk RBAC + NeonDB Cloud Bar */}
-      <div className="rbac-topbar no-print">
-        <div className="rbac-topbar-inner">
-          <div className="rbac-status-group">
-            <span className="rbac-cloud-pill">
-              <span className="status-dot" />
-              NeonDB Serverless · Clerk RBAC
-            </span>
-            <span className="rbac-tier-badge">
-              {user.accessTier.toUpperCase()} · {ARTISAN_ROLE_LABELS[user.role]}
-            </span>
-          </div>
+      {/* Internal RBAC Bar — Rendered STRICTLY on in-house staff/admin routes */}
+      {isInternalRoute && (
+        <div className="rbac-topbar no-print">
+          <div className="rbac-topbar-inner">
+            <div className="rbac-status-group">
+              <span className="rbac-pill rbac-pill-ok">
+                <span className="status-dot" />
+                IN-HOUSE STAFF PORTAL
+              </span>
+              <span className="rbac-pill">
+                {user.accessTier.toUpperCase()} · {ARTISAN_ROLE_LABELS[user.role]}
+              </span>
+            </div>
 
-          <div className="rbac-controls-group">
-            <label className="rbac-select-label" htmlFor="global-role-switcher">
-              <span>Role Session:</span>
-              <select
-                id="global-role-switcher"
-                className="rbac-select"
-                value={user.id}
-                onChange={(e) => handleRoleSwitch(e.target.value)}
-              >
-                <optgroup label="Superadmin (Global Executive HQ)">
-                  {artisans
-                    .filter((a) => a.accessTier === "superadmin")
-                    .map((a) => (
-                      <option key={a.id} value={a.id}>
-                        ★ {a.name} — Superadmin HQ
-                      </option>
-                    ))}
-                </optgroup>
-                <optgroup label="Admin (Factory Plant Managers)">
-                  {artisans
-                    .filter((a) => a.accessTier === "admin")
-                    .map((a) => (
-                      <option key={a.id} value={a.id}>
-                        ◆ {a.name} — Admin ({a.branchName.split(" ")[0]})
-                      </option>
-                    ))}
-                </optgroup>
-                <optgroup label="Staff (Pattern Designers, Tailors, Cutting & QC)">
-                  {artisans
-                    .filter((a) => a.accessTier === "staff")
-                    .map((a) => (
-                      <option key={a.id} value={a.id}>
-                        ● {a.name} — {ARTISAN_ROLE_LABELS[a.role]}
-                      </option>
-                    ))}
-                </optgroup>
-              </select>
-            </label>
-
-            {canManage ? (
-              <label
-                className="rbac-select-label hide-mobile-xs"
-                htmlFor="global-branch-switcher"
-              >
-                <span>Facility:</span>
+            <div className="rbac-controls-group">
+              <label className="rbac-select-label" htmlFor="global-role-switcher">
+                <span>Role Session:</span>
                 <select
-                  id="global-branch-switcher"
+                  id="global-role-switcher"
                   className="rbac-select"
-                  value={activeBranchId}
-                  onChange={(e) => handleBranchSwitch(e.target.value)}
+                  value={user.id}
+                  onChange={(e) => handleRoleSwitch(e.target.value)}
                 >
-                  {branches.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name}
-                    </option>
-                  ))}
+                  <optgroup label="Superadmin (Global Executive HQ)">
+                    {artisans
+                      .filter((a) => a.accessTier === "superadmin")
+                      .map((a) => (
+                        <option key={a.id} value={a.id}>
+                          ★ {a.name} — Superadmin
+                        </option>
+                      ))}
+                  </optgroup>
+                  <optgroup label="Admin (Plant & Atelier Managers)">
+                    {artisans
+                      .filter((a) => a.accessTier === "admin")
+                      .map((a) => (
+                        <option key={a.id} value={a.id}>
+                          ◆ {a.name} — Admin ({a.branchName.split(" ")[0]})
+                        </option>
+                      ))}
+                  </optgroup>
+                  <optgroup label="Staff (Pattern, Cutting, Tailors & QC)">
+                    {artisans
+                      .filter((a) => a.accessTier === "staff")
+                      .map((a) => (
+                        <option key={a.id} value={a.id}>
+                          • {a.name} — {ARTISAN_ROLE_LABELS[a.role]}
+                        </option>
+                      ))}
+                  </optgroup>
                 </select>
               </label>
-            ) : (
-              <span className="rbac-branch-tag hide-mobile-xs">
-                ⌖ {user.branchName}
-              </span>
-            )}
 
-            <Link href="/login" className="rbac-login-link">
-              Clerk Sign In ↗
-            </Link>
+              {canManage && (
+                <label className="rbac-select-label" htmlFor="global-branch-switcher">
+                  <span>Facility:</span>
+                  <select
+                    id="global-branch-switcher"
+                    className="rbac-select"
+                    value={activeBranchId}
+                    onChange={(e) => handleBranchSwitch(e.target.value)}
+                  >
+                    <option value="ALL">All Lagos Facilities (Consolidated)</option>
+                    {branches.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+
+              <Link href="/login" className="rbac-signin-link">
+                Switch Account
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Main Responsive Header */}
+      {/* Main Navigation Header */}
       <header className="site-header no-print">
-        <Link
-          href="/"
-          className="wordmark"
-          aria-label="Miss Kudi Productions home"
-        >
+        <Link href="/" className="wordmark" aria-label="Miss Kudi Productions Home">
           <span className="wordmark-main">MISS KUDI</span>
           <span className="wordmark-sub">PRODUCTIONS</span>
         </Link>
 
-        <nav className="desktop-nav" aria-label="Main navigation">
-          {navLinks.map((item) => {
+        <nav className="desktop-nav" aria-label="Primary Navigation">
+          {navLinks.map((link) => {
             const active =
-              item.href === "/"
+              link.href === "/"
                 ? pathname === "/"
-                : pathname.startsWith(item.href);
+                : pathname.startsWith(link.href);
             return (
               <Link
-                key={item.href}
-                href={item.href}
-                className={active ? "nav-link-active" : ""}
-                aria-current={active ? "page" : undefined}
+                key={link.href}
+                href={link.href}
+                className={active ? "active-nav-link" : ""}
               >
-                {item.label}
+                {link.label}
               </Link>
             );
           })}
@@ -255,156 +262,216 @@ export default function SiteHeader() {
 
         <div className="header-actions-group">
           <Link
-            className="button button-light header-cta hide-tablet"
-            href={isSuper ? "/superadmin" : "/dashboard"}
-            style={{ border: "1px solid var(--line)" }}
+            className="button button-dark header-cta desktop-cta"
+            href={isInternalRoute ? "/dashboard" : "/quote"}
           >
-            {isSuper
-              ? "Superadmin HQ"
-              : user.accessTier === "admin"
-              ? "Admin Dashboard"
-              : "Staff Dashboard"}{" "}
-            <span>⊞</span>
-          </Link>
-          <Link className="button button-dark header-cta" href="/quote">
-            Quote <span>↗</span>
+            {isInternalRoute ? "Staff Dashboard" : "Request a Quote"} <span>↗</span>
           </Link>
 
-          {/* Accessible 48x48px Mobile Hamburger Button (a11y-debugging tap targets) */}
           <button
             type="button"
             className="mobile-menu-trigger"
             aria-label="Open navigation menu"
             aria-expanded={drawerOpen}
+            aria-controls="mobile-navigation-drawer"
             onClick={() => setDrawerOpen(true)}
           >
-            <span className="hamburger-bars" aria-hidden="true">
+            <span className="hamburger-lines" aria-hidden="true">
               <span />
               <span />
               <span />
             </span>
+            <span>Menu</span>
           </button>
         </div>
       </header>
 
-      {/* Mobile Slide-Over Navigation Drawer (<dialog closedby="any">) */}
+      {/* Mobile Navigation Drawer (<dialog closedby="any">) */}
       <dialog
+        id="mobile-navigation-drawer"
         ref={drawerRef}
-        {...({ closedby: "any" } as any)}
-        aria-labelledby={drawerTitleId}
         className="mobile-nav-drawer no-print"
+        aria-labelledby={drawerTitleId}
+        {...({ closedby: "any" } as React.DialogHTMLAttributes<HTMLDialogElement>)}
       >
-        <div className="mobile-drawer-inner">
-          <div className="mobile-drawer-header">
-            <div>
-              <div id={drawerTitleId} className="wordmark-main" style={{ fontSize: 18 }}>
-                MISS KUDI
-              </div>
-              <div className="wordmark-sub">FACTORY OS &amp; NAVIGATION</div>
+        <div className="mobile-drawer-header">
+          <div>
+            <strong id={drawerTitleId} style={{ fontSize: 14, letterSpacing: "0.1em" }}>
+              MISS KUDI PRODUCTIONS
+            </strong>
+            <div style={{ fontSize: 10, color: "var(--muted)", marginTop: 2 }}>
+              {isInternalRoute ? ACCESS_TIER_LABELS[user.accessTier] : "Lagos Garment Manufacturing"}
             </div>
-            <button
-              type="button"
-              className="mobile-drawer-close"
-              aria-label="Close navigation menu"
-              onClick={() => drawerRef.current?.close()}
-            >
-              ✕
-            </button>
           </div>
+          <button
+            type="button"
+            className="mobile-drawer-close"
+            aria-label="Close navigation menu"
+            onClick={() => setDrawerOpen(false)}
+          >
+            Close ✕
+          </button>
+        </div>
 
-          <div className="mobile-drawer-session">
-            <div className="ticket-label">SIGNED IN VIA CLERK RBAC</div>
+        {isInternalRoute && (
+          <div className="mobile-drawer-session-card">
+            <div className="ticket-label">ACTIVE STAFF SESSION</div>
             <div style={{ fontWeight: 700, fontSize: 14, marginTop: 4 }}>
               {user.name}
             </div>
-            <div style={{ fontSize: 11.5, color: "var(--muted)" }}>
-              {ACCESS_TIER_LABELS[user.accessTier]} ·{" "}
-              {ARTISAN_ROLE_LABELS[user.role]}
+            <div style={{ fontSize: 11, color: "var(--muted)", marginBottom: 10 }}>
+              {ARTISAN_ROLE_LABELS[user.role]} · {user.branchName}
             </div>
-            <div style={{ fontSize: 11, color: "var(--ink)", marginTop: 4 }}>
-              ⌖ {user.branchName} ({user.station})
-            </div>
-          </div>
 
-          <nav className="mobile-drawer-links" aria-label="Mobile navigation">
-            {navLinks.map((item) => {
-              const active =
-                item.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(item.href);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`mobile-drawer-link ${active ? "active" : ""}`}
-                  onClick={() => drawerRef.current?.close()}
-                >
-                  <span>{item.label}</span>
-                  <span>→</span>
-                </Link>
-              );
-            })}
-            <Link
-              href="/login"
-              className="mobile-drawer-link"
-              onClick={() => drawerRef.current?.close()}
+            <label
+              htmlFor="mobile-role-select"
+              style={{ display: "block", fontSize: 10, fontWeight: 700, marginBottom: 4 }}
             >
-              <span>Switch Account / Clerk Sign In</span>
-              <span>↗</span>
-            </Link>
-          </nav>
+              SWITCH ROLE SESSION
+            </label>
+            <select
+              id="mobile-role-select"
+              value={user.id}
+              onChange={(e) => handleRoleSwitch(e.target.value)}
+              style={{
+                width: "100%",
+                minHeight: 44,
+                padding: "8px 10px",
+                border: "1px solid var(--line)",
+                background: "#fff",
+                fontSize: 13,
+              }}
+            >
+              {artisans.map((a) => (
+                <option key={a.id} value={a.id}>
+                  [{a.accessTier.toUpperCase()}] {a.name} — {ARTISAN_ROLE_LABELS[a.role]}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <nav className="mobile-drawer-links" aria-label="Mobile Navigation">
+          {navLinks.map((link) => {
+            const active =
+              link.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`mobile-drawer-link ${active ? "active" : ""}`}
+                onClick={() => setDrawerOpen(false)}
+              >
+                <span>{link.label}</span>
+                <span>→</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="mobile-drawer-footer">
+          <Link
+            href="/quote"
+            className="button button-dark"
+            style={{ width: "100%" }}
+            onClick={() => setDrawerOpen(false)}
+          >
+            Request Production Quote <span>↗</span>
+          </Link>
+          <Link
+            href="/tracker"
+            className="button button-light"
+            style={{ width: "100%", border: "1px solid var(--line)" }}
+            onClick={() => setDrawerOpen(false)}
+          >
+            Track Production Order <span>⌖</span>
+          </Link>
         </div>
       </dialog>
 
       {/* Mobile Bottom Thumb-Zone Navigation Dock */}
-      <nav
-        className="mobile-bottom-dock no-print"
-        aria-label="Quick mobile navigation"
-      >
-        <Link
-          href="/"
-          className={`dock-item ${pathname === "/" ? "active" : ""}`}
-        >
-          <span className="dock-icon">⌂</span>
-          <span>Home</span>
-        </Link>
-        <Link
-          href="/tracker"
-          className={`dock-item ${pathname.startsWith("/tracker") ? "active" : ""}`}
-        >
-          <span className="dock-icon">⌖</span>
-          <span>Tracker</span>
-        </Link>
-        <Link
-          href="/dashboard"
-          className={`dock-item ${
-            pathname.startsWith("/dashboard") ? "active" : ""
-          }`}
-        >
-          <span className="dock-icon">⊞</span>
-          <span>
-            {user.accessTier === "staff" ? "My Station" : "Dashboard"}
-          </span>
-        </Link>
-        <Link
-          href={isSuper ? "/superadmin" : "/workspace"}
-          className={`dock-item ${
-            pathname.startsWith("/superadmin") ||
-            pathname.startsWith("/workspace")
-              ? "active"
-              : ""
-          }`}
-        >
-          <span className="dock-icon">⚙</span>
-          <span>{isSuper ? "HQ Admin" : "Factory OS"}</span>
-        </Link>
-        <Link
-          href="/quote"
-          className={`dock-item ${pathname.startsWith("/quote") ? "active" : ""}`}
-        >
-          <span className="dock-icon">↗</span>
-          <span>Quote</span>
-        </Link>
+      <nav className="mobile-bottom-dock no-print" aria-label="Quick Mobile Actions">
+        {isInternalRoute ? (
+          <>
+            <Link
+              href="/dashboard"
+              className={`mobile-dock-item ${pathname.startsWith("/dashboard") ? "active" : ""}`}
+            >
+              <span aria-hidden="true">⊞</span>
+              <span>Station</span>
+            </Link>
+            <Link
+              href="/workspace"
+              className={`mobile-dock-item ${pathname.startsWith("/workspace") ? "active" : ""}`}
+            >
+              <span aria-hidden="true">⚙</span>
+              <span>Workspace</span>
+            </Link>
+            {isSuper && (
+              <Link
+                href="/superadmin"
+                className={`mobile-dock-item ${pathname.startsWith("/superadmin") ? "active" : ""}`}
+              >
+                <span aria-hidden="true">★</span>
+                <span>HQ</span>
+              </Link>
+            )}
+            <Link
+              href="/tracker"
+              className={`mobile-dock-item ${pathname.startsWith("/tracker") ? "active" : ""}`}
+            >
+              <span aria-hidden="true">⌖</span>
+              <span>Tracker</span>
+            </Link>
+            <Link
+              href="/login"
+              className={`mobile-dock-item ${pathname.startsWith("/login") ? "active" : ""}`}
+            >
+              <span aria-hidden="true">👤</span>
+              <span>Account</span>
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/"
+              className={`mobile-dock-item ${pathname === "/" ? "active" : ""}`}
+            >
+              <span aria-hidden="true">⌂</span>
+              <span>Home</span>
+            </Link>
+            <Link
+              href="/services"
+              className={`mobile-dock-item ${pathname.startsWith("/services") ? "active" : ""}`}
+            >
+              <span aria-hidden="true">✦</span>
+              <span>Services</span>
+            </Link>
+            <Link
+              href="/size-charts"
+              className={`mobile-dock-item ${pathname.startsWith("/size-charts") ? "active" : ""}`}
+            >
+              <span aria-hidden="true">⊞</span>
+              <span>Grading</span>
+            </Link>
+            <Link
+              href="/tracker"
+              className={`mobile-dock-item ${pathname.startsWith("/tracker") ? "active" : ""}`}
+            >
+              <span aria-hidden="true">⌖</span>
+              <span>Tracker</span>
+            </Link>
+            <Link
+              href="/quote"
+              className={`mobile-dock-item ${pathname.startsWith("/quote") ? "active" : ""}`}
+            >
+              <span aria-hidden="true">↗</span>
+              <span>Quote</span>
+            </Link>
+          </>
+        )}
       </nav>
     </>
   );

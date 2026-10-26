@@ -236,8 +236,8 @@ export default function SizeCharts() {
         <div className="grading-calculator-card">
           <div className="grading-calc-header">
             <div>
-              <span className="section-kicker">
-                PATTERN STUDIO TOOL · INSPIRED BY NEXUS SCAN &amp; GO
+              <span className="section-kicker mono">
+                VICTORIA ISLAND &amp; YABA PATTERN STUDIO
               </span>
               <h3 style={{ margin: "6px 0 4px", fontSize: 20 }}>
                 Interactive Bulk Order Ratio &amp; Marker Consumption Planner

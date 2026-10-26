@@ -2315,6 +2315,372 @@ figure {
   color: var(--text-secondary);
 }
 
+/* ==========================================================================
+   LEONXLNX / TASTE-SKILL ARCHITECTURAL LAYOUT FAMILIES
+   (DESIGN_VARIANCE: 8 | MOTION_INTENSITY: 6 | VISUAL_DENSITY: 5)
+   ========================================================================== */
+
+/* Layout Family B: Architectural Manifesto + Collapsed Hairline Telemetry Ledger */
+.taste-manifesto-grid {
+  display: grid;
+  grid-template-columns: 160px 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.taste-manifesto-index {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.taste-index-rule {
+  width: 100%;
+  height: 1px;
+  background: var(--line);
+}
+
+.taste-manifesto-statement h2 span {
+  font-family: var(--serif);
+  font-style: italic;
+  color: #736757;
+}
+
+.taste-hairline-ledger {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.taste-ledger-cell {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-right: 1px solid var(--line);
+}
+
+.taste-ledger-cell:last-child {
+  border-right: none;
+}
+
+.taste-ledger-cell strong {
+  font-size: 21px;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.taste-ledger-cell small {
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+/* Layout Family C: 12-Column Asymmetrical Spanning Bento Grid (7+5 / 5+7, 0 Orphan Cells) */
+.taste-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.taste-bento-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.taste-bento-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(31, 36, 25, 0.05);
+}
+
+.taste-bento-card.bento-span-7 {
+  grid-column: span 7;
+}
+
+.taste-bento-card.bento-span-5 {
+  grid-column: span 5;
+}
+
+.taste-bento-card.bento-horizontal {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+}
+
+.taste-bento-figure {
+  position: relative;
+  min-height: 250px;
+  height: 100%;
+  overflow: hidden;
+  background: #d8d0c5;
+}
+
+.taste-bento-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.taste-bento-card:hover .taste-bento-img {
+  transform: scale(1.03);
+}
+
+.taste-bento-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.taste-bento-body h3 {
+  font-size: 19px;
+  letter-spacing: -0.025em;
+  margin: 0 0 8px;
+}
+
+.taste-bento-body p {
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.taste-bento-footer {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Layout Family D: Editorial Numbered Specification Index Ledger */
+.taste-spec-index-ledger {
+  border-top: 1px solid var(--line);
+}
+
+.taste-spec-row {
+  display: grid;
+  grid-template-columns: 64px 0.85fr 1.15fr 220px;
+  gap: 28px;
+  align-items: center;
+  padding: 26px 12px;
+  border-bottom: 1px solid var(--line);
+  transition: background-color 0.25s ease;
+}
+
+.taste-spec-row:hover {
+  background-color: #ffffff;
+}
+
+.taste-spec-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.taste-spec-tag {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.taste-spec-title-col h3 {
+  font-size: 20px;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.taste-spec-desc-col p {
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+}
+
+.taste-spec-pills {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 10.5px;
+  color: var(--ink);
+}
+
+.taste-spec-thumb {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  aspect-ratio: 3 / 2;
+  background: #d8d0c5;
+}
+
+.taste-spec-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.taste-spec-row:hover .taste-spec-thumb img {
+  transform: scale(1.04);
+}
+
+/* Layout Family E: Dark Architectural Blueprint Pipeline */
+.taste-blueprint-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 56px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.taste-blueprint-step {
+  padding: 24px 20px;
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+}
+
+.taste-blueprint-step:last-child {
+  border-right: none;
+}
+
+.taste-blueprint-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #dfd2c0;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.taste-blueprint-step h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+
+.taste-blueprint-step p {
+  font-size: 11.5px;
+  line-height: 1.75;
+  color: #e2ddd4;
+  margin: 0;
+}
+
+/* Layout Family F: Asymmetrical Flagship Spotlight (1 Dominant + 2 Stacked Secondary) */
+.taste-plant-spotlight-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.taste-plant-flagship {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.taste-plant-flagship-figure {
+  position: relative;
+  flex: 1;
+  min-height: 340px;
+  background: #d8d0c5;
+}
+
+.taste-plant-flagship-figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.taste-plant-flagship-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.taste-plant-flagship-body h3 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.taste-plant-flagship-body p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.taste-plant-secondary-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.taste-plant-secondary-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  flex: 1;
+  overflow: hidden;
+}
+
+.taste-plant-secondary-figure {
+  position: relative;
+  min-height: 200px;
+  background: #d8d0c5;
+}
+
+.taste-plant-secondary-figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.taste-plant-secondary-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.taste-plant-secondary-body h3 {
+  font-size: 17px;
+  margin: 0;
+}
+
+.taste-plant-secondary-body p {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
 @media print {
   .no-print,
   .site-header,
@@ -2377,8 +2743,26 @@ figure {
   .login-grid,
   .marketing-hero-grid,
   .process-stage-card,
-  .garment-category-grid {
+  .garment-category-grid,
+  .taste-manifesto-grid,
+  .taste-plant-spotlight-grid {
     grid-template-columns: 1fr;
+  }
+  .taste-bento-card.bento-span-7,
+  .taste-bento-card.bento-span-5 {
+    grid-column: span 12;
+  }
+  .taste-spec-row {
+    grid-template-columns: 44px 1fr 180px;
+  }
+  .taste-spec-desc-col {
+    grid-column: 2 / -1;
+  }
+  .taste-blueprint-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .taste-blueprint-step {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
   }
   .facility-showcase-grid,
   .about-triptych-grid,
@@ -2397,8 +2781,26 @@ figure {
   .artisan-leadership-grid,
   .garment-category-card,
   .editorial-stats-grid,
-  .hero-secondary-strip {
+  .hero-secondary-strip,
+  .taste-hairline-ledger,
+  .taste-bento-card.bento-horizontal,
+  .taste-spec-row,
+  .taste-blueprint-steps,
+  .taste-plant-secondary-card {
     grid-template-columns: 1fr;
+  }
+  .taste-ledger-cell {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .taste-ledger-cell:last-child {
+    border-bottom: none;
+  }
+  .taste-spec-desc-col {
+    grid-column: auto;
+  }
+  .taste-blueprint-step {
+    border-right: none;
   }
   .hero-spec-pills {
     grid-template-columns: 1fr 1fr;

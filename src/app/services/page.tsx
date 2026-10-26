@@ -8,7 +8,7 @@ export default function Services() {
       <section className="marketing-hero section-wrap">
         <div className="marketing-hero-grid">
           <div>
-            <div className="section-kicker">02 / MANUFACTURING CAPABILITIES</div>
+            <div className="section-kicker mono">02 / MANUFACTURING CAPABILITIES</div>
             <h1 style={{ marginTop: 16 }}>
               Manufacturing that
               <br />
@@ -50,11 +50,11 @@ export default function Services() {
         </div>
       </section>
 
-      {/* Core 4 Pillars with Detailed Deliverables */}
+      {/* Core 4 Pillars — 12-Column Asymmetrical Spanning Bento Grid (taste-skill) */}
       <section className="capabilities section-wrap" id="capabilities">
         <div className="section-heading">
           <div>
-            <div className="section-kicker">FOUR CORE PRODUCTION PILLARS</div>
+            <div className="section-kicker mono">FOUR CORE PRODUCTION PILLARS</div>
             <h2>
               Complete garment execution
               <br />
@@ -67,42 +67,52 @@ export default function Services() {
           </p>
         </div>
 
-        <div className="service-grid">
-          {services.map((service) => (
-            <article className="service-card-v2" key={service.number}>
-              <figure className="service-figure">
-                <img
-                  src={service.image}
-                  alt={service.alt}
-                  width={600}
-                  height={440}
-                  loading="lazy"
-                  decoding="async"
-                  className="service-card-img"
-                />
-                <span className="service-number">{service.number}</span>
-                <span className="service-moq-pill mono">{service.moqLabel}</span>
-              </figure>
-              <div className="service-copy">
-                <div className="service-role-kicker">{service.artisanRole}</div>
-                <h3>{service.title}</h3>
-                <p>{service.copy}</p>
-                <ul className="service-deliverables-list">
-                  {service.deliverables.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            </article>
-          ))}
+        <div className="taste-bento-grid">
+          {services.map((service, index) => {
+            const isWide = index === 0 || index === 3;
+            return (
+              <article
+                className={`taste-bento-card ${isWide ? "bento-span-7 bento-horizontal" : "bento-span-5"}`}
+                key={service.number}
+              >
+                <figure className="taste-bento-figure">
+                  <img
+                    src={service.image}
+                    alt={service.alt}
+                    width={640}
+                    height={460}
+                    loading="lazy"
+                    decoding="async"
+                    className="taste-bento-img"
+                  />
+                  <span className="service-number mono">{service.number}</span>
+                  <span className="service-moq-pill mono">{service.moqLabel}</span>
+                </figure>
+                <div className="taste-bento-body">
+                  <div className="service-role-kicker mono">{service.artisanRole}</div>
+                  <h3>{service.title}</h3>
+                  <p>{service.copy}</p>
+                  <ul className="service-deliverables-list">
+                    {service.deliverables.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <div className="taste-bento-footer mono">
+                    <span>{service.leadTimeLabel}</span>
+                    <Link href="/quote">Configure Run →</Link>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
 
-      {/* Garment Categories & GSM Matrix */}
+      {/* Garment Categories & GSM Specification Index Ledger (taste-skill) */}
       <section className="section-wrap" style={{ paddingTop: 88, paddingBottom: 88 }}>
         <div className="section-heading">
           <div>
-            <div className="section-kicker">GARMENT SPECIALIZATIONS</div>
+            <div className="section-kicker mono">GARMENT SPECIALIZATIONS &amp; GSM LEDGER</div>
             <h2>
               What we produce across
               <br />
@@ -115,35 +125,38 @@ export default function Services() {
           </p>
         </div>
 
-        <div className="garment-category-grid">
-          {garmentCategories.map((cat) => (
-            <article key={cat.title} className="garment-category-card">
-              <figure className="garment-category-figure">
+        <div className="taste-spec-index-ledger">
+          {garmentCategories.map((cat, idx) => (
+            <article key={cat.title} className="taste-spec-row">
+              <div className="taste-spec-num mono">0{idx + 1}</div>
+              <div className="taste-spec-title-col">
+                <span className="taste-spec-tag mono">{cat.tag}</span>
+                <h3>{cat.title}</h3>
+              </div>
+              <div className="taste-spec-desc-col">
+                <p>{cat.description}</p>
+                <div className="taste-spec-pills mono">
+                  <span>{cat.gsmRange}</span>
+                  <strong>{cat.moq}</strong>
+                </div>
+              </div>
+              <figure className="taste-spec-thumb">
                 <img
                   src={cat.image}
                   alt={cat.alt}
-                  width={540}
-                  height={380}
+                  width={360}
+                  height={240}
                   loading="lazy"
                   decoding="async"
                 />
-                <figcaption className="garment-category-tag mono">{cat.tag}</figcaption>
               </figure>
-              <div className="garment-category-body">
-                <div className="garment-category-meta">
-                  <span>{cat.gsmRange}</span>
-                  <strong className="mono">{cat.moq}</strong>
-                </div>
-                <h3>{cat.title}</h3>
-                <p>{cat.description}</p>
-              </div>
             </article>
           ))}
         </div>
 
         {/* FAQ Accordion */}
         <div style={{ marginTop: 64, maxWidth: 840 }}>
-          <div className="section-kicker" style={{ marginBottom: 12 }}>
+          <div className="section-kicker mono" style={{ marginBottom: 12 }}>
             TECHNICAL &amp; MOQ FAQS
           </div>
           <div className="faq-accordion-stack">

@@ -32,7 +32,7 @@ export const services: ServiceItem[] = [
     number: "02",
     title: "Private-label manufacturing",
     subtitle: "Retail-Ready Branding, Woven Labels & Trim Sourcing",
-    copy: "Turnkey garments prepared for direct retail or e-commerce drop under your label — complete with custom woven neck labels, care tags, branded hardware and polybag barcoding.",
+    copy: "Turnkey garments prepared for direct retail or e-commerce launches under your label. Every unit includes custom woven neck labels, care tags, branded hardware and polybag barcoding.",
     moqLabel: "MOQ: 100 pcs per style",
     leadTimeLabel: "4 – 6 Weeks Turnaround",
     artisanRole: "Trim Procurement & Finishing Specialists",

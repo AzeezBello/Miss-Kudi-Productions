@@ -110,8 +110,8 @@ export default function ProductionTrackerPage() {
             </h2>
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link className="button button-light" href="/workspace" style={{ border: "1px solid var(--line)" }}>
-              Factory Operations OS <span>→</span>
+            <Link className="button button-light" href="/size-charts" style={{ border: "1px solid var(--line)" }}>
+              Size &amp; Grading Matrix <span>⊞</span>
             </Link>
             <Link className="button button-dark" href="/quote">
               New Production Inquiry <span>↗</span>
@@ -201,8 +201,8 @@ export default function ProductionTrackerPage() {
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                       <button
                         type="button"
-                        className="button button-light"
-                        style={{ minHeight: 38, padding: "0 14px", border: "1px solid var(--line)" }}
+                        className="button button-dark"
+                        style={{ minHeight: 38, padding: "0 14px" }}
                         onClick={() => {
                           setSelectedOrder(order);
                           setTicketOpen(true);
@@ -210,16 +210,6 @@ export default function ProductionTrackerPage() {
                       >
                         Job Ticket &amp; Spec Sheet <span>🖨</span>
                       </button>
-                      {currentIdx < STAGE_ORDER.length - 1 && (
-                        <button
-                          type="button"
-                          className="button button-dark"
-                          style={{ minHeight: 38, padding: "0 14px" }}
-                          onClick={() => handleAdvanceStage(order)}
-                        >
-                          Advance to Stage 0{currentIdx + 2} <span>→</span>
-                        </button>
-                      )}
                     </div>
                   </div>
 

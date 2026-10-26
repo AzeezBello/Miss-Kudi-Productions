@@ -3,9 +3,9 @@ import Link from "next/link";
 import SiteHeader from "./components/SiteHeader";
 
 export const metadata = {
-  title: "Miss Kudi Productions — B2B Garment Manufacturing & Factory OS",
+  title: "Miss Kudi Productions — B2B Garment Manufacturing in Lagos, Nigeria",
   description:
-    "Lagos-based B2B garment manufacturing partner powered by NeonDB Serverless Postgres & Clerk RBAC across Superadmin, Admin, Pattern Designers, Tailors, and Quality Control.",
+    "Lagos-based B2B garment manufacturing partner for fashion brands. Bulk cut-and-sew, private-label production, CAD pattern grading, and AQL 2.5 quality control.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -28,8 +28,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               Production at scale.
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <Link className="button button-light" href="/dashboard">
-                Role Dashboards <span>⊞</span>
+              <Link className="button button-light" href="/size-charts">
+                Size &amp; Grading Matrix <span>⊞</span>
               </Link>
               <Link className="button button-light" href="/tracker">
                 Track Production Run <span>⌖</span>
@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} Miss Kudi Productions</span>
             <span>
-              Lagos, Nigeria · NeonDB Serverless Postgres &amp; Clerk RBAC
+              Lagos, Nigeria · Yaba Flagship · Victoria Island Atelier · Ikeja Export Depot
             </span>
             <span>B2B GARMENT MANUFACTURING</span>
           </div>
