@@ -6,7 +6,7 @@ import { useRef } from 'react';
 
 // Rotating box with subtle animation
 function RotatingBox() {
-  const ref = useRef<THREE.Mesh>(null!);
+  const ref = useRef<any>(null!);
   // Rotate continuously
   useFrame(() => {
     if (ref.current) {
