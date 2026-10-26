@@ -1,55 +1,88 @@
 "use client";
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Box, Stars, Environment } from '@react-three/drei';
-import { motion } from 'framer-motion';
-import { useRef } from 'react';
 
-// Rotating box with subtle animation
-function RotatingBox() {
-  const ref = useRef<any>(null!);
-  // Rotate continuously
-  useFrame(() => {
-    if (ref.current) {
-      ref.current.rotation.x += 0.001;
-      ref.current.rotation.y += 0.002;
-    }
-  });
-  return (
-    <Box ref={ref} args={[2, 2, 2]} castShadow receiveShadow>
-      <meshPhysicalMaterial color="#556b2f" metalness={0.3} roughness={0.2} envMapIntensity={0.8} />
-    </Box>
-  );
-}
+import React from "react";
+import Link from "next/link";
 
 export default function AnimatedHero() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      className="hero-visual"
-      style={{ width: '100%', height: '500px' }}
-    >
-      <Canvas
-        shadows
-        camera={{ position: [0, 0, 8], fov: 55 }}
-        style={{ background: 'transparent' }}
-        gl={{ antialias: true }}
-        onCreated={({ gl }) => { gl.setClearColor('#f8f5f0'); }}
-      >
-        {/* Fog for depth */}
-        <fog attach="fog" args={["#f8f5f0", 10, 25]} />
-        {/* Lighting */}
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 10, 5]} intensity={1.2} castShadow />
-        {/* Stars background */}
-        <Stars radius={100} depth={50} count={5000} saturation={0} fade speed={1} />
-        {/* Environment map for realistic reflections */}
-        <Environment preset="sunset" background={false} />
-        <RotatingBox />
-        {/* Auto‑rotate the camera for an immersive feel */}
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-      </Canvas>
-    </motion.div>
+    <div className="editorial-hero-showcase">
+      {/* Primary LCP Hero Figure — modern-web-guidance: optimize-image-priority & html */}
+      <figure className="hero-figure-main">
+        <div className="hero-image-frame">
+          <img
+            src="/images/hero-lagos-atelier.jpg"
+            alt="Master tailors and pattern designers working at timber drafting tables inside the Miss Kudi Productions garment atelier in Lagos, Nigeria"
+            width={1200}
+            height={900}
+            fetchPriority="high"
+            decoding="async"
+            className="hero-main-img"
+          />
+          <div className="hero-live-telemetry-badge">
+            <span className="status-dot" />
+            <div>
+              <strong>YABA &amp; VI ATELIERS · LIVE FLOOR</strong>
+              <span>92 Stations Active · 99.4% AQL 2.5 Pass Yield</span>
+            </div>
+          </div>
+        </div>
+        <figcaption className="image-caption">
+          <span>FIG 01. LAGOS FLAGSHIP PATTERN &amp; PRODUCTION FLOOR</span>
+          <span className="mono">MOQ 50 – 5,000+ PCS · EXPORT READY</span>
+        </figcaption>
+      </figure>
+
+      {/* Secondary Craftsmanship Strip */}
+      <div className="hero-secondary-strip">
+        <figure className="hero-mini-card">
+          <img
+            src="/images/pattern-cutting-studio.jpg"
+            alt="Nigerian pattern designer inspecting graded CAD garment blocks and fabric bolts"
+            width={480}
+            height={320}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            <strong>CAD Pattern &amp; Cutting Studio</strong>
+            <span>XS–XXL Nest Grading · 94%+ Marker Yield</span>
+          </figcaption>
+        </figure>
+
+        <figure className="hero-mini-card">
+          <img
+            src="/images/qc-finishing-bay.jpg"
+            alt="Quality control inspector measuring tailored olive blazer on a dress form in Lagos finishing bay"
+            width={480}
+            height={320}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            <strong>AQL 2.5 Quality &amp; Finishing Bay</strong>
+            <span>36-Point Spec Audit · Steam &amp; Carton Dispatch</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      {/* Quick Spec Bar */}
+      <div className="hero-spec-pills">
+        <div className="hero-spec-item">
+          <span className="ticket-label">FACILITIES</span>
+          <strong>3 Lagos Plants</strong>
+        </div>
+        <div className="hero-spec-item">
+          <span className="ticket-label">TURNAROUND</span>
+          <strong>3 – 5 Weeks</strong>
+        </div>
+        <div className="hero-spec-item">
+          <span className="ticket-label">QUALITY STANDARD</span>
+          <strong>ISO / AQL 2.5</strong>
+        </div>
+        <Link href="/tracker" className="hero-spec-link">
+          Live Order Tracker <span>→</span>
+        </Link>
+      </div>
+    </div>
   );
 }

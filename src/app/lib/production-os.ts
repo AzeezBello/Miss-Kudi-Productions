@@ -273,6 +273,22 @@ export const PROMO_CODES: Record<
 
 export const INITIAL_ARTISANS: ArtisanStaff[] = [
   {
+    id: "art-super-demola",
+    name: "Demola Blaze",
+    email: "demolablaze@gmail.com",
+    accessTier: "superadmin",
+    role: "production_manager",
+    branchId: "br-yaba",
+    branchName: "Yaba Flagship Production Plant",
+    specialty: "Founder, Global Superadmin & Multi-Facility Operations (Clerk ID: user_3LDmpp5iS8YnIwmYQlrRwVZCLz2)",
+    station: "Executive HQ · Lagos",
+    activeRuns: 6,
+    unitsCompletedMonth: 4800,
+    qcPassRate: 99.9,
+    shiftStatus: "CLOCKED_IN",
+    status: "Executive HQ",
+  },
+  {
     id: "art-super",
     name: "Kudi Alabi",
     email: "kudi@misskudi.com",
@@ -1019,17 +1035,17 @@ export function calculateProductionEstimate(params: {
 }
 
 const STORAGE_KEYS = {
-  ORDERS: "mkp_nexus_orders_v2",
-  ARTISANS: "mkp_nexus_artisans_v2",
-  BRANCHES: "mkp_nexus_branches_v2",
-  INVENTORY: "mkp_nexus_inventory_v2",
-  POS: "mkp_nexus_pos_v2",
-  CLIENTS: "mkp_nexus_clients_v2",
-  EXPENSES: "mkp_nexus_expenses_v2",
-  AUDIT: "mkp_nexus_audit_v2",
-  DRAFT_SIZE_MATRIX: "mkp_nexus_draft_sizes_v2",
-  CURRENT_USER: "mkp_nexus_session_user_v2",
-  ACTIVE_BRANCH: "mkp_nexus_active_branch_v2",
+  ORDERS: "mkp_nexus_orders_v3",
+  ARTISANS: "mkp_nexus_artisans_v3",
+  BRANCHES: "mkp_nexus_branches_v3",
+  INVENTORY: "mkp_nexus_inventory_v3",
+  POS: "mkp_nexus_pos_v3",
+  CLIENTS: "mkp_nexus_clients_v3",
+  EXPENSES: "mkp_nexus_expenses_v3",
+  AUDIT: "mkp_nexus_audit_v3",
+  DRAFT_SIZE_MATRIX: "mkp_nexus_draft_sizes_v3",
+  CURRENT_USER: "mkp_nexus_session_user_v3",
+  ACTIVE_BRANCH: "mkp_nexus_active_branch_v3",
 };
 
 // --- RBAC Session Helpers ---

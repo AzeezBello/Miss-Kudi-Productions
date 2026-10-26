@@ -27,7 +27,7 @@ export default function LoginPage() {
     const [artisans, setArtisans] = useState<ArtisanStaff[]>(INITIAL_ARTISANS);
     const [currentUser, setCurrentUser] = useState<ArtisanStaff>(INITIAL_ARTISANS[0]);
 
-    const [email, setEmail] = useState("kudi@misskudiproductions.com");
+    const [email, setEmail] = useState("demolablaze@gmail.com");
     const [password, setPassword] = useState("••••••••••••");
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -45,7 +45,7 @@ export default function LoginPage() {
 
         const cleanEmail = email.trim().toLowerCase();
         if (!cleanEmail || !cleanEmail.includes("@")) {
-            setErrorMessage("Please enter a valid factory work email address (e.g. kudi@misskudiproductions.com).");
+            setErrorMessage("Please enter a valid factory work email address (e.g. demolablaze@gmail.com).");
             requestAnimationFrame(() => errorSummaryRef.current?.focus());
             return;
         }
@@ -62,7 +62,7 @@ export default function LoginPage() {
 
         if (!matchedUser) {
             setErrorMessage(
-                `No Clerk / NeonDB staff record found for "${email}". Select one of the pre-provisioned accounts below or sign in with kudi@misskudiproductions.com.`
+                `No Clerk / NeonDB staff record found for "${email}". Select one of the pre-provisioned accounts below or sign in with demolablaze@gmail.com.`
             );
             requestAnimationFrame(() => errorSummaryRef.current?.focus());
             return;
