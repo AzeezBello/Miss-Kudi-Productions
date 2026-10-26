@@ -135,7 +135,7 @@ export async function POST(request: Request) {
                 },
               }),
             });
-          } else if (password && String(password).length >= 8) {
+          } else if (password && String(password).length >= 6) {
             const parts = String(name).trim().split(/\s+/);
             const firstName = parts[0] || "Specialist";
             const lastName = parts.slice(1).join(" ") || "MKP";
@@ -148,6 +148,7 @@ export async function POST(request: Request) {
               body: JSON.stringify({
                 email_address: [email.trim().toLowerCase()],
                 password: String(password),
+                skip_password_checks: true,
                 first_name: firstName,
                 last_name: lastName,
                 public_metadata: {

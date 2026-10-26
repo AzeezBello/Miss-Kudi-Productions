@@ -288,7 +288,7 @@ export default function QuoteForm() {
           <input
             name="company"
             required
-            placeholder="Your fashion brand (e.g. Zikora Lagos)"
+            placeholder="Your fashion brand or company name"
             value={formData.company}
             onChange={handleChange}
             onBlur={syncInputValidity}

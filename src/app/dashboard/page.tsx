@@ -1818,7 +1818,7 @@ export default function RoleDashboardPage() {
             <input
               name="name"
               required
-              placeholder="e.g. Tunde Bakare"
+              placeholder="e.g. Kudi Lasisi"
               value={newStaffForm.name}
               onChange={(e) =>
                 setNewStaffForm((p) => ({ ...p, name: e.target.value }))

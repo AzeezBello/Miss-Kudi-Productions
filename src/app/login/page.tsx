@@ -27,8 +27,8 @@ export default function LoginPage() {
     const [artisans, setArtisans] = useState<ArtisanStaff[]>(INITIAL_ARTISANS);
     const [currentUser, setCurrentUser] = useState<ArtisanStaff>(INITIAL_ARTISANS[0]);
 
-    const [email, setEmail] = useState("demolablaze@gmail.com");
-    const [password, setPassword] = useState("••••••••••••");
+    const [email, setEmail] = useState("kudi@kproductions.com");
+    const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [authSuccess, setAuthSuccess] = useState<string | null>(null);
@@ -36,6 +36,17 @@ export default function LoginPage() {
     useEffect(() => {
         setArtisans(loadArtisans());
         setCurrentUser(getCurrentSessionUser());
+
+        fetch("/api/admin/users")
+            .then((r) => r.json())
+            .then((data) => {
+                if (data?.ok && Array.isArray(data.users) && data.users.length > 0) {
+                    setArtisans(data.users);
+                }
+            })
+            .catch(() => {
+                // Keep local accounts
+            });
     }, []);
 
     const handleFormSignIn = (e: React.FormEvent) => {
@@ -45,13 +56,13 @@ export default function LoginPage() {
 
         const cleanEmail = email.trim().toLowerCase();
         if (!cleanEmail || !cleanEmail.includes("@")) {
-            setErrorMessage("Please enter a valid factory work email address (e.g. demolablaze@gmail.com).");
+            setErrorMessage("Please enter a valid factory work email address (e.g. kudi@kproductions.com).");
             requestAnimationFrame(() => errorSummaryRef.current?.focus());
             return;
         }
 
         if (!password || password.length < 6) {
-            setErrorMessage("Password must be at least 6 characters long.");
+            setErrorMessage("Please enter your password (at least 6 characters).");
             requestAnimationFrame(() => errorSummaryRef.current?.focus());
             return;
         }
@@ -62,8 +73,20 @@ export default function LoginPage() {
 
         if (!matchedUser) {
             setErrorMessage(
-                `No Clerk / NeonDB staff record found for "${email}". Select one of the pre-provisioned accounts below or sign in with demolablaze@gmail.com.`
+                `No provisioned account found for "${email}". Active accounts: kudi@kproductions.com (Admin) and demolablaze@gmail.com (Superadmin).`
             );
+            requestAnimationFrame(() => errorSummaryRef.current?.focus());
+            return;
+        }
+
+        if (cleanEmail === "kudi@kproductions.com" && password !== "misskudi") {
+            setErrorMessage("Invalid password for kudi@kproductions.com.");
+            requestAnimationFrame(() => errorSummaryRef.current?.focus());
+            return;
+        }
+
+        if (cleanEmail === "demolablaze@gmail.com" && password !== "$Omerta93") {
+            setErrorMessage("Invalid password for demolablaze@gmail.com.");
             requestAnimationFrame(() => errorSummaryRef.current?.focus());
             return;
         }
@@ -71,7 +94,7 @@ export default function LoginPage() {
         setCurrentSessionUser(matchedUser);
         setCurrentUser(matchedUser);
         setAuthSuccess(
-            `Authenticated via Clerk RBAC as ${matchedUser.name} (${ACCESS_TIER_LABELS[matchedUser.accessTier]}). Redirecting...`
+            `Authenticated as ${matchedUser.name} (${ACCESS_TIER_LABELS[matchedUser.accessTier]}). Redirecting...`
         );
 
         setTimeout(() => {
@@ -83,11 +106,10 @@ export default function LoginPage() {
         }, 500);
     };
 
-    const handleQuickDemoSwitch = (user: ArtisanStaff, destination: string) => {
-        setCurrentSessionUser(user);
-        setCurrentUser(user);
+    const handleSelectAccount = (user: ArtisanStaff) => {
         setEmail(user.email);
-        router.push(destination);
+        setErrorMessage(null);
+        setAuthSuccess(null);
     };
 
     const superadmins = artisans.filter((a) => a.accessTier === "superadmin");
@@ -100,22 +122,22 @@ export default function LoginPage() {
                 <div style={{ maxWidth: "1120px", margin: "0 auto" }}>
                     <div style={{ marginBottom: "2rem" }}>
                         <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap", marginBottom: "0.5rem" }}>
-                            <span className="section-tag" style={{ marginBottom: 0 }}>CLERK AUTHENTICATION &amp; NEON SERVERLESS RBAC</span>
-                            <span className="badge badge-gold">HYBRID SESSION GATEWAY</span>
+                            <span className="section-tag" style={{ marginBottom: 0 }}>INTERNAL STAFF &amp; ADMIN AUTHENTICATION</span>
+                            <span className="badge badge-gold">AUTHORIZED ACCESS ONLY</span>
                         </div>
                         <h1 style={{ fontSize: "clamp(1.85rem, 3.8vw, 2.75rem)" }}>
-                            Factory Identity &amp; <span className="text-gold">Role Portal</span>
+                            Factory Identity &amp; <span className="text-gold">Operations Portal</span>
                         </h1>
                         <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "68ch", marginTop: "0.4rem" }}>
-                            Sign in with your Clerk factory credentials or use the 1-click Role Switcher to test{" "}
-                            <strong style={{ color: "var(--text-primary)" }}>Superadmin</strong>,{" "}
-                            <strong style={{ color: "var(--text-primary)" }}>Factory Admin</strong>, and{" "}
-                            <strong style={{ color: "var(--text-primary)" }}>Artisan Staff</strong> dashboards.
+                            Sign in with your authorized Miss Kudi Productions credentials to access{" "}
+                            <strong style={{ color: "var(--text-primary)" }}>Superadmin HQ</strong>,{" "}
+                            <strong style={{ color: "var(--text-primary)" }}>Factory Admin Dashboard</strong>, or{" "}
+                            <strong style={{ color: "var(--text-primary)" }}>Production Floor Stations</strong>.
                         </p>
                     </div>
 
                     <div className="login-grid">
-                        {/* Left Column: Standard Clerk Sign-In Form following autofill-sign-in-form & accessible-error-announcement */}
+                        {/* Left Column: Standard Clerk Sign-In Form */}
                         <section
                             className="glass-panel"
                             aria-labelledby="clerk-signin-heading"
@@ -123,9 +145,9 @@ export default function LoginPage() {
                         >
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", flexWrap: "wrap", gap: "0.5rem" }}>
                                 <h2 id="clerk-signin-heading" style={{ fontSize: "1.35rem" }}>
-                                    Clerk Identity Sign-In
+                                    Staff &amp; Admin Sign-In
                                 </h2>
-                                <span className="badge badge-blue">CLERK v6 + NEON</span>
+                                <span className="badge badge-blue">CLERK + NEON RBAC</span>
                             </div>
 
                             {errorMessage && (
@@ -171,7 +193,7 @@ export default function LoginPage() {
                             <form onSubmit={handleFormSignIn} noValidate>
                                 <div className="form-group">
                                     <label htmlFor="email" className="form-label">
-                                        Factory Work Email
+                                        Work Email
                                     </label>
                                     <input
                                         type="email"
@@ -186,14 +208,14 @@ export default function LoginPage() {
                                         enterKeyHint="next"
                                         required
                                         aria-invalid={errorMessage ? "true" : "false"}
-                                        placeholder="name@misskudiproductions.com"
+                                        placeholder="kudi@kproductions.com"
                                     />
                                 </div>
 
                                 <div className="form-group">
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
                                         <label htmlFor="current-password" className="form-label" style={{ marginBottom: 0 }}>
-                                            Password / Clerk Passkey
+                                            Password
                                         </label>
                                         <button
                                             type="button"
@@ -225,12 +247,13 @@ export default function LoginPage() {
                                         autoComplete="current-password"
                                         enterKeyHint="done"
                                         minLength={6}
+                                        placeholder="Enter your password"
                                         required
                                     />
                                 </div>
 
                                 <button type="submit" className="btn-primary" style={{ width: "100%", marginTop: "0.5rem" }}>
-                                    Sign In with Clerk Identity
+                                    Sign In to Operations Portal
                                 </button>
                             </form>
 
@@ -257,15 +280,15 @@ export default function LoginPage() {
                             </div>
                         </section>
 
-                        {/* Right Column: Instant 1-Click Role Switcher Cards */}
-                        <section aria-labelledby="demo-switcher-heading" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                        {/* Right Column: Provisioned Directory Accounts */}
+                        <section aria-labelledby="directory-accounts-heading" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                             <div className="glass-panel" style={{ padding: "1.5rem" }}>
-                                <span className="section-tag" style={{ marginBottom: "0.25rem" }}>INSTANT ROLE EMULATOR</span>
-                                <h2 id="demo-switcher-heading" style={{ fontSize: "1.25rem", marginBottom: "0.35rem" }}>
-                                    1-Click Role Switcher (Superadmin / Admin / Staff)
+                                <span className="section-tag" style={{ marginBottom: "0.25rem" }}>PROVISIONED DIRECTORY</span>
+                                <h2 id="directory-accounts-heading" style={{ fontSize: "1.25rem", marginBottom: "0.35rem" }}>
+                                    Authorized Accounts ({artisans.length})
                                 </h2>
                                 <p style={{ fontSize: "0.82rem", color: "var(--text-secondary)", marginBottom: "1rem" }}>
-                                    Switch immediately between pre-configured Clerk + NeonDB staff accounts to inspect role-gated views and dashboards:
+                                    Active Clerk &amp; Neon PostgreSQL accounts registered at 1 Alawode Street, Lagos:
                                 </p>
 
                                 {/* Tier 1: Superadmin */}
@@ -278,8 +301,8 @@ export default function LoginPage() {
                                             key={user.id}
                                             style={{
                                                 padding: "0.95rem 1rem",
-                                                background: currentUser.id === user.id ? "#eef3e8" : "var(--paper)",
-                                                border: currentUser.id === user.id ? "1px solid var(--ink)" : "1px solid var(--border-subtle)",
+                                                background: email.toLowerCase() === user.email.toLowerCase() ? "#eef3e8" : "var(--paper)",
+                                                border: email.toLowerCase() === user.email.toLowerCase() ? "1px solid var(--ink)" : "1px solid var(--border-subtle)",
                                                 borderRadius: "4px",
                                                 display: "flex",
                                                 justifyContent: "space-between",
@@ -293,19 +316,17 @@ export default function LoginPage() {
                                                     {user.name} <span className="badge badge-gold" style={{ marginLeft: "0.35rem" }}>SUPERADMIN</span>
                                                 </div>
                                                 <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "0.15rem" }}>
-                                                    {user.specialty} • {user.email} • Station: <code>{user.station}</code>
+                                                    {user.email} • Station: <code>{user.station}</code>
                                                 </div>
                                             </div>
-                                            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                                                <button
-                                                    type="button"
-                                                    className="btn-primary"
-                                                    style={{ padding: "0.55rem 0.95rem", fontSize: "0.72rem" }}
-                                                    onClick={() => handleQuickDemoSwitch(user, "/superadmin")}
-                                                >
-                                                    Open Superadmin HQ →
-                                                </button>
-                                            </div>
+                                            <button
+                                                type="button"
+                                                className="btn-secondary"
+                                                style={{ padding: "0.5rem 0.9rem", fontSize: "0.72rem" }}
+                                                onClick={() => handleSelectAccount(user)}
+                                            >
+                                                Select Email
+                                            </button>
                                         </div>
                                     ))}
                                 </div>
@@ -313,7 +334,7 @@ export default function LoginPage() {
                                 {/* Tier 2: Factory Admins */}
                                 <div style={{ marginBottom: "1.25rem" }}>
                                     <div style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#0369a1", fontWeight: 700, marginBottom: "0.5rem" }}>
-                                        2. Admin Tier — Plant Managers &amp; Merchandising Leads
+                                        2. Admin Tier — Plant Managers &amp; Operations Leads
                                     </div>
                                     <div style={{ display: "grid", gap: "0.6rem" }}>
                                         {admins.map((user) => (
@@ -321,8 +342,8 @@ export default function LoginPage() {
                                                 key={user.id}
                                                 style={{
                                                     padding: "0.85rem 1rem",
-                                                    background: currentUser.id === user.id ? "#e0f2fe" : "var(--paper)",
-                                                    border: currentUser.id === user.id ? "1px solid #0284c7" : "1px solid var(--border-subtle)",
+                                                    background: email.toLowerCase() === user.email.toLowerCase() ? "#e0f2fe" : "var(--paper)",
+                                                    border: email.toLowerCase() === user.email.toLowerCase() ? "1px solid #0284c7" : "1px solid var(--border-subtle)",
                                                     borderRadius: "4px",
                                                     display: "flex",
                                                     justifyContent: "space-between",
@@ -336,16 +357,16 @@ export default function LoginPage() {
                                                         {user.name} <span className="badge badge-blue" style={{ marginLeft: "0.35rem" }}>ADMIN</span>
                                                     </div>
                                                     <div style={{ fontSize: "0.76rem", color: "var(--text-secondary)", marginTop: "0.15rem" }}>
-                                                        {user.branchName} • {user.specialty}
+                                                        {user.email} • {user.branchName} • Station: <code>{user.station}</code>
                                                     </div>
                                                 </div>
                                                 <button
                                                     type="button"
                                                     className="btn-secondary"
                                                     style={{ padding: "0.5rem 0.9rem", fontSize: "0.72rem" }}
-                                                    onClick={() => handleQuickDemoSwitch(user, "/dashboard")}
+                                                    onClick={() => handleSelectAccount(user)}
                                                 >
-                                                    Open Admin Dashboard →
+                                                    Select Email
                                                 </button>
                                             </div>
                                         ))}
@@ -357,50 +378,56 @@ export default function LoginPage() {
                                     <div style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#15803d", fontWeight: 700, marginBottom: "0.5rem" }}>
                                         3. Staff Tier — Pattern Designers, Cutters, Tailors &amp; QC Inspectors
                                     </div>
-                                    <div style={{ display: "grid", gap: "0.6rem" }}>
-                                        {staffList.slice(0, 4).map((user) => (
-                                            <div
-                                                key={user.id}
-                                                style={{
-                                                    padding: "0.8rem 1rem",
-                                                    background: currentUser.id === user.id ? "#dcfce7" : "var(--paper)",
-                                                    border: currentUser.id === user.id ? "1px solid #16a34a" : "1px solid var(--border-subtle)",
-                                                    borderRadius: "4px",
-                                                    display: "flex",
-                                                    justifyContent: "space-between",
-                                                    alignItems: "center",
-                                                    gap: "0.75rem",
-                                                    flexWrap: "wrap",
-                                                }}
-                                            >
-                                                <div>
-                                                    <div style={{ fontWeight: 600, color: "var(--text-primary)", fontSize: "0.86rem" }}>
-                                                        {user.name}{" "}
-                                                        <span className="badge badge-green" style={{ marginLeft: "0.35rem" }}>
-                                                            {ARTISAN_ROLE_LABELS[user.role]}
-                                                        </span>
-                                                    </div>
-                                                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "0.15rem" }}>
-                                                        Station: {user.station} • {user.specialty}
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    className="btn-secondary"
-                                                    style={{ padding: "0.5rem 0.9rem", fontSize: "0.72rem" }}
-                                                    onClick={() => handleQuickDemoSwitch(user, "/dashboard")}
+                                    {staffList.length === 0 ? (
+                                        <div style={{ padding: "0.85rem 1rem", background: "var(--paper)", border: "1px dashed var(--border-subtle)", borderRadius: "4px", fontSize: "0.78rem", color: "var(--text-secondary)" }}>
+                                            No demo staff accounts loaded. Superadmin and Admin users can provision floor staff from <code>/superadmin</code> or <code>/dashboard</code>.
+                                        </div>
+                                    ) : (
+                                        <div style={{ display: "grid", gap: "0.6rem" }}>
+                                            {staffList.map((user) => (
+                                                <div
+                                                    key={user.id}
+                                                    style={{
+                                                        padding: "0.8rem 1rem",
+                                                        background: email.toLowerCase() === user.email.toLowerCase() ? "#dcfce7" : "var(--paper)",
+                                                        border: email.toLowerCase() === user.email.toLowerCase() ? "1px solid #16a34a" : "1px solid var(--border-subtle)",
+                                                        borderRadius: "4px",
+                                                        display: "flex",
+                                                        justifyContent: "space-between",
+                                                        alignItems: "center",
+                                                        gap: "0.75rem",
+                                                        flexWrap: "wrap",
+                                                    }}
                                                 >
-                                                    Open Staff Station →
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
+                                                    <div>
+                                                        <div style={{ fontWeight: 600, color: "var(--text-primary)", fontSize: "0.86rem" }}>
+                                                            {user.name}{" "}
+                                                            <span className="badge badge-green" style={{ marginLeft: "0.35rem" }}>
+                                                                {ARTISAN_ROLE_LABELS[user.role]}
+                                                            </span>
+                                                        </div>
+                                                        <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "0.15rem" }}>
+                                                            {user.email} • Station: {user.station}
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        className="btn-secondary"
+                                                        style={{ padding: "0.5rem 0.9rem", fontSize: "0.72rem" }}
+                                                        onClick={() => handleSelectAccount(user)}
+                                                    >
+                                                        Select Email
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
                             <div className="glass-panel" style={{ padding: "1.15rem 1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
                                 <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-                                    Want to inspect the Neon PostgreSQL schema &amp; Clerk webhook status?
+                                    Want to inspect the Neon PostgreSQL schema &amp; Clerk status?
                                 </div>
                                 <Link href="/api/health" className="btn-secondary" style={{ padding: "0.45rem 0.85rem", fontSize: "0.72rem" }}>
                                     View /api/health JSON

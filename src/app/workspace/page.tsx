@@ -135,7 +135,7 @@ export default function FactoryWorkspacePage() {
     saveOrders(next);
     const logs = appendAuditLog({
       action: "order.stage_updated",
-      actor: "Kudi Alabi (Factory Director)",
+      actor: "Kudi Lasisi (Plant Admin)",
       role: "Production Manager",
       targetRef: jobCode,
       summary: `Moved order ${jobCode} to Stage ${STAGE_METADATA[newStage].stepNumber} (${STAGE_METADATA[newStage].shortLabel}).`,
@@ -163,7 +163,7 @@ export default function FactoryWorkspacePage() {
     saveOrders(next);
     const logs = appendAuditLog({
       action: "order.artisan_assigned",
-      actor: "Kudi Alabi",
+      actor: "Kudi Lasisi",
       role: "Production Manager",
       targetRef: jobCode,
       summary: `Assigned ${artisanName} (${field.replace("assigned", "")}) to job ${jobCode}.`,
@@ -192,7 +192,7 @@ export default function FactoryWorkspacePage() {
     saveOrders(next);
     const logs = appendAuditLog({
       action: "floor.batch_logged",
-      actor: "Ngozi Eze (QC Lead)",
+      actor: "Kudi Lasisi (QC Lead)",
       role: "Quality Control (QC)",
       targetRef: jobCode,
       summary: `Logged +${addSewn} sewn pieces & AQL QC inspection for ${jobCode}.`,
@@ -240,7 +240,7 @@ export default function FactoryWorkspacePage() {
     }).catch(() => {});
     const logs = appendAuditLog({
       action: "artisan.onboarded",
-      actor: "Kudi Alabi",
+      actor: "Kudi Lasisi",
       role: "Production Manager",
       targetRef: created.name,
       summary: `Onboarded ${created.name} (${created.accessTier.toUpperCase()} · ${ARTISAN_ROLE_LABELS[created.role]} · ${created.station}).`,
@@ -275,7 +275,7 @@ export default function FactoryWorkspacePage() {
     }).catch(() => {});
     const logs = appendAuditLog({
       action: "rbac.user_updated",
-      actor: "Kudi Alabi",
+      actor: "Kudi Lasisi",
       role: "Superadmin / Admin CRUD",
       targetRef: editingArtisan.email,
       summary: `Updated ${editingArtisan.name} (${editingArtisan.accessTier.toUpperCase()} · ${ARTISAN_ROLE_LABELS[editingArtisan.role]}).`,
@@ -297,7 +297,7 @@ export default function FactoryWorkspacePage() {
     ).catch(() => {});
     const logs = appendAuditLog({
       action: "rbac.user_deleted",
-      actor: "Kudi Alabi",
+      actor: "Kudi Lasisi",
       role: "Superadmin / Admin CRUD",
       targetRef: art.email,
       summary: `Removed ${art.name} (${art.accessTier.toUpperCase()}) from roster.`,
@@ -437,8 +437,8 @@ export default function FactoryWorkspacePage() {
 
     const logs = appendAuditLog({
       action: "procurement.po_received",
-      actor: "Segun Adeyemi (Master Cutter)",
-      role: "Cutting Master",
+      actor: "Kudi Lasisi (Plant Admin)",
+      role: "Production Manager",
       targetRef: po.poNumber,
       summary: `Received ${po.quantityOrdered} ${po.unit} of ${po.materialName} into Lagos fabric store.`,
     });
@@ -489,7 +489,7 @@ export default function FactoryWorkspacePage() {
       category: newExpense.category,
       description: newExpense.description.trim(),
       amountNgn: amount,
-      recordedBy: "Kudi Alabi (Factory Director)",
+      recordedBy: "Kudi Lasisi (Plant Admin)",
       createdAt: new Date().toISOString(),
     };
     const next = [entry, ...expenses];
@@ -497,7 +497,7 @@ export default function FactoryWorkspacePage() {
     saveExpenses(next);
     const logs = appendAuditLog({
       action: "finance.expense_recorded",
-      actor: "Kudi Alabi",
+      actor: "Kudi Lasisi",
       role: "Production Manager",
       targetRef: entry.category.toUpperCase(),
       summary: `Logged factory operating expense: ₦${amount.toLocaleString()} (${entry.description}).`,

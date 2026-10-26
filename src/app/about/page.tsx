@@ -4,47 +4,47 @@ import { facilityHighlights } from "../data";
 const PUBLIC_CRAFT_LEADS = [
   {
     role: "Production & Client Strategy",
-    name: "Kudi Alabi",
+    name: "Kudi Lasisi",
     facility: "Yaba Flagship Production Plant",
     focus:
       "Multi-facility capacity planning, private-label collection scheduling and international brand partnerships.",
     metric: "99.6% On-Time Dispatch",
   },
   {
-    role: "Senior Pattern Designer",
-    name: "Chioma Nwosu",
+    role: "CAD Pattern & Grading Studio",
+    name: "Pattern & Grading Division",
     facility: "Victoria Island Pattern & Sample Atelier",
     focus:
       "CAD master block drafting, couture draping, first-fit toile development and XS–XXL size grading.",
     metric: "99.4% Fit Approval",
   },
   {
-    role: "Master Cutter & Marker Lead",
-    name: "Segun Adeyemi",
+    role: "Master Cutting & Marker Studio",
+    name: "Bulk Lay & Marker Division",
     facility: "Yaba Flagship Production Plant",
     focus:
       "24-hour fabric relaxation, zero-waste marker nesting, shade-lot bundling and precision multi-ply cutting.",
     metric: "94.8% Marker Yield",
   },
   {
-    role: "Master Tailor & Sewing Line Lead",
-    name: "Funke Olatunji",
+    role: "Master Tailoring & Sewing Lines",
+    name: "Industrial Cut-and-Sew Division",
     facility: "Yaba Flagship Production Plant",
     focus:
       "Balanced industrial lockstitch, French-seam resortwear, heavyweight streetwear and structured outerwear lines.",
     metric: "98.9% Inline Pass Rate",
   },
   {
-    role: "AQL 2.5 Quality Control Lead",
-    name: "Ngozi Eze",
+    role: "AQL 2.5 Quality Assurance Bay",
+    name: "Quality Inspection & Finishing Team",
     facility: "Ikeja Workwear & Export Finishing Depot",
     focus:
       "36-point garment measurement verification, seam tensile testing, steam finishing and export carton sign-off.",
     metric: "AQL 2.5 Certified",
   },
   {
-    role: "Atelier Sample & Merchandising Lead",
-    name: "Zainab Lawal",
+    role: "Private-Label & Merchandising Desk",
+    name: "Brand Onboarding & Sampling Desk",
     facility: "Victoria Island Pattern & Sample Atelier",
     focus:
       "Tech-pack onboarding, trim & woven label sourcing, and pre-production sample approvals for fashion labels.",
