@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <main>
       <div className="announcement">
-        B2B GARMENT MANUFACTURING · LAGOS, NIGERIA · 3 PRODUCTION PLANTS · AQL 2.5 QUALITY CERTIFIED
+        B2B GARMENT MANUFACTURING · 1 ALAWODE STREET, LAGOS, NIGERIA · 3 PRODUCTION PLANTS · AQL 2.5 QUALITY CERTIFIED
       </div>
 
       {/* LAYOUT FAMILY A: Asymmetrical Split Hero + Telemetry Showcase */}
@@ -53,8 +53,8 @@ export default function Home() {
             </Link>
           </div>
           <div className="hero-note">
-            <span className="status-dot" /> Lagos, Nigeria · Yaba Flagship Plant, Victoria Island
-            Atelier &amp; Ikeja Export Depot
+            <span className="status-dot" /> 1 Alawode Street, Lagos, Nigeria · Yaba Flagship Plant,
+            Victoria Island Atelier &amp; Ikeja Export Depot
           </div>
         </div>
         <div className="hero-visual">
@@ -394,7 +394,7 @@ export default function Home() {
           <div className="quote-detail">
             <span className="detail-mark">⌖</span>
             <div>
-              <strong>Lagos, Nigeria · Global Export Ready</strong>
+              <strong>1 Alawode Street, Lagos, Nigeria · Global Export Ready</strong>
               <span>
                 B2B Partner Volume Tiers (3%–18% efficiency) · Live Job Code Tracking
               </span>

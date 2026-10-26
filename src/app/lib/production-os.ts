@@ -209,7 +209,7 @@ export const INITIAL_BRANCHES: FactoryBranch[] = [
   {
     id: "br-yaba",
     name: "Yaba Flagship Production Plant",
-    location: "Sabon Yaba, Lagos Mainland",
+    location: "1 Alawode Street, Lagos, Nigeria",
     specialization: "High-Volume Bulk Sewing, Knits, Wovens & AQL 2.5 QC Hub",
     machineCount: 48,
     staffCount: 6,
@@ -1035,17 +1035,17 @@ export function calculateProductionEstimate(params: {
 }
 
 const STORAGE_KEYS = {
-  ORDERS: "mkp_nexus_orders_v3",
-  ARTISANS: "mkp_nexus_artisans_v3",
-  BRANCHES: "mkp_nexus_branches_v3",
-  INVENTORY: "mkp_nexus_inventory_v3",
-  POS: "mkp_nexus_pos_v3",
-  CLIENTS: "mkp_nexus_clients_v3",
-  EXPENSES: "mkp_nexus_expenses_v3",
-  AUDIT: "mkp_nexus_audit_v3",
-  DRAFT_SIZE_MATRIX: "mkp_nexus_draft_sizes_v3",
-  CURRENT_USER: "mkp_nexus_session_user_v3",
-  ACTIVE_BRANCH: "mkp_nexus_active_branch_v3",
+  ORDERS: "mkp_nexus_orders_v4",
+  ARTISANS: "mkp_nexus_artisans_v4",
+  BRANCHES: "mkp_nexus_branches_v4",
+  INVENTORY: "mkp_nexus_inventory_v4",
+  POS: "mkp_nexus_pos_v4",
+  CLIENTS: "mkp_nexus_clients_v4",
+  EXPENSES: "mkp_nexus_expenses_v4",
+  AUDIT: "mkp_nexus_audit_v4",
+  DRAFT_SIZE_MATRIX: "mkp_nexus_draft_sizes_v4",
+  CURRENT_USER: "mkp_nexus_session_user_v4",
+  ACTIVE_BRANCH: "mkp_nexus_active_branch_v4",
 };
 
 // --- RBAC Session Helpers ---

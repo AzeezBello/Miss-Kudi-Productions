@@ -55,10 +55,10 @@ async function main() {
   await runQuery(
     `INSERT INTO factory_branches (id, name, location, specialization, machine_count, staff_count, fabric_meters_stock, net_revenue_ngn, operating_expenses_ngn, true_net_profit_ngn, status)
      VALUES
-       ('BR-LOS-YABA', 'Yaba Flagship Production Plant', 'Sabon Yaba, Lagos Mainland', 'Woven Tops, Streetwear & Bulk Cut-and-Sew', 48, 34, 4820, 42850000, 14200000, 28650000, 'ACTIVE'),
+       ('BR-LOS-YABA', 'Yaba Flagship Production Plant', '1 Alawode Street, Lagos, Nigeria', 'Woven Tops, Streetwear & Bulk Cut-and-Sew', 48, 34, 4820, 42850000, 14200000, 28650000, 'ACTIVE'),
        ('BR-LOS-VI', 'Victoria Island Bespoke & Bridal Atelier', 'Adeola Odeku, Victoria Island, Lagos', 'Couture Draping, Silk & Luxury Eveningwear', 22, 16, 1650, 29400000, 9100000, 20300000, 'ACTIVE'),
        ('BR-LOS-IKEJA', 'Ikeja Bulk Uniform & Industrial Depot', 'Oba Akran Industrial Estate, Ikeja', 'Corporate Uniforms, Workwear & Heavy Denim', 64, 45, 7900, 38100000, 12850000, 25250000, 'ACTIVE')
-     ON CONFLICT (id) DO NOTHING`
+     ON CONFLICT (id) DO UPDATE SET location = EXCLUDED.location`
   );
 
   // Seed initial Superadmin, Admin, and Staff accounts idempotently

@@ -47,9 +47,9 @@ export default function Quote() {
           <div className="quote-detail">
             <span className="detail-mark">⌖</span>
             <div>
-              <strong>Lagos, Nigeria · Local &amp; International Dispatch</strong>
+              <strong>1 Alawode Street, Lagos, Nigeria · Local &amp; International Dispatch</strong>
               <span>
-                Yaba Flagship Plant · Victoria Island Atelier · Ikeja Export Finishing Depot
+                Head Office &amp; Yaba Flagship Plant · Victoria Island Atelier · Ikeja Export Depot
               </span>
             </div>
           </div>

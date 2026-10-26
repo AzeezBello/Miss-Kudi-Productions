@@ -76,7 +76,7 @@ export function ModalDialog({
     >
       <div className="mkp-dialog-header no-print">
         <div>
-          <span className="section-kicker">MISS KUDI PRODUCTIONS · FACTORY OS</span>
+          <span className="section-kicker">MISS KUDI PRODUCTIONS · PRODUCTION DOSSIER</span>
           <h3 id={titleId} style={{ margin: "4px 0 0", fontSize: 18 }}>
             {title}
           </h3>
@@ -122,7 +122,7 @@ export function ProductionJobTicketModal({
               MISS KUDI PRODUCTIONS
             </div>
             <div className="wordmark-sub" style={{ marginTop: 3 }}>
-              B2B GARMENT MANUFACTURING · LAGOS, NIGERIA
+              B2B GARMENT MANUFACTURING · 1 ALAWODE STREET, LAGOS, NIGERIA
             </div>
           </div>
           <div style={{ textAlign: "right" }}>

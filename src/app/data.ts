@@ -247,7 +247,7 @@ export const facilityHighlights: FacilityHighlight[] = [
   {
     code: "PLANT 01 · YABA FLAGSHIP",
     name: "Yaba Flagship Production Plant",
-    location: "Sabon Yaba, Lagos Mainland",
+    location: "1 Alawode Street, Lagos, Nigeria",
     focus: "High-Volume Cut-and-Sew, Knitwear, Streetwear & Central AQL 2.5 QC Hub",
     machines: "48 Industrial Sewing & Cutting Stations",
     monthlyCapacity: "18,000+ Units / Month",

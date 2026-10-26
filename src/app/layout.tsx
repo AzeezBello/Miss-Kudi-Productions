@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} Miss Kudi Productions</span>
             <span>
-              Lagos, Nigeria · Yaba Flagship · Victoria Island Atelier · Ikeja Export Depot
+              1 Alawode Street, Lagos, Nigeria · Yaba Flagship · Victoria Island Atelier · Ikeja Export Depot
             </span>
             <span>B2B GARMENT MANUFACTURING</span>
           </div>

@@ -96,7 +96,7 @@ export default function About() {
               decoding="async"
             />
             <figcaption className="image-caption">
-              <span>YABA FLAGSHIP &amp; VICTORIA ISLAND ATELIER</span>
+              <span>HEAD OFFICE: 1 ALAWODE STREET · YABA &amp; VI ATELIER</span>
               <span className="mono">EST. 2018 · LAGOS, NIGERIA</span>
             </figcaption>
           </figure>
