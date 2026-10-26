@@ -40,6 +40,10 @@ export default function SuperadminHqPage() {
   const [tierFilter, setTierFilter] = useState<string>("all");
   const [branchFilter, setBranchFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [activeSection, setActiveSection] = useState<
+    "overview" | "accounts" | "facilities" | "audit"
+  >("overview");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [notice, setNotice] = useState("");
   const [dbVerifying, setDbVerifying] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -620,116 +624,421 @@ export default function SuperadminHqPage() {
     return matchBranch && matchTier && matchSearch;
   });
 
+  const userInitials = currentUser.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <main>
-      <section className="section-wrap" style={{ paddingBlock: "48px 96px" }}>
-        {/* Superadmin Header */}
-        <div className="section-heading" style={{ marginBottom: 24 }}>
-          <div>
-            <div className="section-kicker">
-              SUPERADMIN GLOBAL HQ · NEONDB SERVERLESS &amp; CLERK RBAC CRUD
+      <div
+        className={`dashboard-shell ${
+          sidebarCollapsed ? "sidebar-collapsed" : ""
+        }`}
+      >
+        {/* SUPERADMIN GLOBAL HQ SIDEBAR */}
+        <aside
+          className="dashboard-sidebar"
+          aria-label="Superadmin Global HQ Sidebar"
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            {/* Identity Card */}
+            <div className="sidebar-identity-card">
+              <div className="sidebar-identity-top">
+                <span className="sidebar-avatar" aria-hidden="true">
+                  {userInitials}
+                </span>
+                <div className="sidebar-identity-meta">
+                  <div className="sidebar-user-name">{currentUser.name}</div>
+                  <div className="sidebar-user-email">{currentUser.email}</div>
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 6,
+                  flexWrap: "wrap",
+                  paddingTop: 6,
+                  borderTop: "1px solid var(--line)",
+                }}
+              >
+                <span className="mkp-badge mkp-badge-olive">
+                  SUPERADMIN HQ ★
+                </span>
+                <span
+                  className="mono"
+                  style={{ fontSize: 10, color: "var(--muted)" }}
+                >
+                  1 Alawode St · Lagos
+                </span>
+              </div>
             </div>
-            <h2>
-              Multi-Facility Command &amp;{" "}
-              <em>Superadmin / Admin CRUD.</em>
-            </h2>
+
+            {/* HQ Navigation Modules */}
+            <nav aria-label="Superadmin HQ Modules">
+              <div className="sidebar-section-label">HQ GOVERNANCE MODULES</div>
+              <ul className="sidebar-nav-list">
+                <li>
+                  <button
+                    type="button"
+                    className={`sidebar-nav-btn ${
+                      activeSection === "overview" && tierFilter === "all"
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      setActiveSection("overview");
+                      setTierFilter("all");
+                    }}
+                  >
+                    <span className="sidebar-nav-btn-label">
+                      <span className="sidebar-nav-icon" aria-hidden="true">
+                        ◈
+                      </span>
+                      <span>Executive Overview</span>
+                    </span>
+                    <span className="sidebar-nav-badge">ALL</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={`sidebar-nav-btn ${
+                      activeSection === "accounts" && tierFilter === "all"
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      setActiveSection("accounts");
+                      setTierFilter("all");
+                    }}
+                  >
+                    <span className="sidebar-nav-btn-label">
+                      <span className="sidebar-nav-icon" aria-hidden="true">
+                        ⊞
+                      </span>
+                      <span>All RBAC Accounts CRUD</span>
+                    </span>
+                    <span className="sidebar-nav-badge">{artisans.length}</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={`sidebar-nav-btn ${
+                      activeSection === "accounts" &&
+                      tierFilter === "superadmin"
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      setActiveSection("accounts");
+                      setTierFilter("superadmin");
+                    }}
+                  >
+                    <span className="sidebar-nav-btn-label">
+                      <span className="sidebar-nav-icon" aria-hidden="true">
+                        ★
+                      </span>
+                      <span>Superadmins</span>
+                    </span>
+                    <span className="sidebar-nav-badge">{superadminCount}</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={`sidebar-nav-btn ${
+                      activeSection === "accounts" && tierFilter === "admin"
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      setActiveSection("accounts");
+                      setTierFilter("admin");
+                    }}
+                  >
+                    <span className="sidebar-nav-btn-label">
+                      <span className="sidebar-nav-icon" aria-hidden="true">
+                        ◆
+                      </span>
+                      <span>Factory Admins</span>
+                    </span>
+                    <span className="sidebar-nav-badge">{adminCount}</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={`sidebar-nav-btn ${
+                      activeSection === "accounts" && tierFilter === "staff"
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      setActiveSection("accounts");
+                      setTierFilter("staff");
+                    }}
+                  >
+                    <span className="sidebar-nav-btn-label">
+                      <span className="sidebar-nav-icon" aria-hidden="true">
+                        ⚙
+                      </span>
+                      <span>Floor Specialists</span>
+                    </span>
+                    <span className="sidebar-nav-badge">{staffCount}</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={`sidebar-nav-btn ${
+                      activeSection === "facilities" ? "active" : ""
+                    }`}
+                    onClick={() => setActiveSection("facilities")}
+                  >
+                    <span className="sidebar-nav-btn-label">
+                      <span className="sidebar-nav-icon" aria-hidden="true">
+                        ⌂
+                      </span>
+                      <span>Facility Branches CRUD</span>
+                    </span>
+                    <span className="sidebar-nav-badge">{branches.length}</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={`sidebar-nav-btn ${
+                      activeSection === "audit" ? "active" : ""
+                    }`}
+                    onClick={() => setActiveSection("audit")}
+                  >
+                    <span className="sidebar-nav-btn-label">
+                      <span className="sidebar-nav-icon" aria-hidden="true">
+                        ⛨
+                      </span>
+                      <span>Security &amp; Audit Trail</span>
+                    </span>
+                    <span className="sidebar-nav-badge">
+                      {auditLogs.length}
+                    </span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+
+            {/* Quick Provisioning Actions */}
+            <div>
+              <div className="sidebar-section-label">QUICK CRUD ACTIONS</div>
+              <div className="sidebar-action-stack">
+                <button
+                  type="button"
+                  className="sidebar-quick-btn primary"
+                  onClick={() => openCreateAccountModal("admin")}
+                >
+                  <span>+ New Factory Admin</span>
+                  <span aria-hidden="true">⊞</span>
+                </button>
+                <button
+                  type="button"
+                  className="sidebar-quick-btn"
+                  onClick={() => openCreateAccountModal("superadmin")}
+                >
+                  <span>+ New Superadmin</span>
+                  <span aria-hidden="true">★</span>
+                </button>
+                <button
+                  type="button"
+                  className="sidebar-quick-btn"
+                  onClick={() => openCreateAccountModal("staff")}
+                >
+                  <span>+ New Floor Specialist</span>
+                  <span aria-hidden="true">⚙</span>
+                </button>
+                <button
+                  type="button"
+                  className="sidebar-quick-btn"
+                  onClick={() => setBranchModalOpen(true)}
+                >
+                  <span>+ Provision Facility Branch</span>
+                  <span aria-hidden="true">⌂</span>
+                </button>
+                <button
+                  type="button"
+                  className="sidebar-quick-btn"
+                  onClick={handleVerifyNeonSchema}
+                  disabled={dbVerifying}
+                >
+                  <span>
+                    {dbVerifying
+                      ? "Verifying NeonDB..."
+                      : "Verify NeonDB Schema"}
+                  </span>
+                  <span aria-hidden="true">⚡</span>
+                </button>
+              </div>
+            </div>
           </div>
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <button
-              type="button"
-              className="button button-light"
-              style={{ minHeight: 44, border: "1px solid var(--line)" }}
-              onClick={handleVerifyNeonSchema}
-              disabled={dbVerifying}
+
+          {/* Cross-Portal Links */}
+          <div className="sidebar-footer-card">
+            <div className="sidebar-section-label" style={{ marginTop: 0 }}>
+              OPERATIONS PORTALS
+            </div>
+            <Link className="sidebar-quick-btn" href="/dashboard">
+              <span>Admin &amp; Staff Console</span>
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link className="sidebar-quick-btn" href="/workspace">
+              <span>Full Factory OS</span>
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link className="sidebar-quick-btn" href="/tracker">
+              <span>Live Order Tracker</span>
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link className="sidebar-quick-btn" href="/login">
+              <span>Switch Account</span>
+              <span aria-hidden="true">⇄</span>
+            </Link>
+          </div>
+        </aside>
+
+        {/* MAIN SUPERADMIN WORKSPACE */}
+        <section className="dashboard-main">
+          <div className="dashboard-topbar-strip">
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+              <button
+                type="button"
+                className="sidebar-toggle-btn"
+                aria-expanded={!sidebarCollapsed}
+                onClick={() => setSidebarCollapsed((prev) => !prev)}
+              >
+                <span aria-hidden="true">☰</span>
+                {sidebarCollapsed ? "Show Sidebar" : "Hide Sidebar"}
+              </button>
+              <span className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>
+                MODULE: <strong>{activeSection.toUpperCase()}</strong>
+              </span>
+            </div>
+            <div className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>
+              HEAD OFFICE: <strong>1 ALAWODE STREET, LAGOS</strong>
+            </div>
+          </div>
+
+          {/* Superadmin Header */}
+          <div className="section-heading" style={{ marginBottom: 24 }}>
+            <div>
+              <div className="section-kicker">
+                SUPERADMIN GLOBAL HQ · NEONDB SERVERLESS &amp; CLERK RBAC CRUD
+              </div>
+              <h2>
+                Multi-Facility Command &amp;{" "}
+                <em>Superadmin / Admin CRUD.</em>
+              </h2>
+            </div>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <button
+                type="button"
+                className="button button-light"
+                style={{ minHeight: 44, border: "1px solid var(--line)" }}
+                onClick={handleVerifyNeonSchema}
+                disabled={dbVerifying}
+              >
+                {dbVerifying
+                  ? "Verifying NeonDB..."
+                  : "Verify NeonDB Schema"}{" "}
+                <span>⚡</span>
+              </button>
+              <button
+                type="button"
+                className="button button-light"
+                style={{ minHeight: 44, border: "1px solid var(--line)" }}
+                onClick={() => openCreateAccountModal("superadmin")}
+              >
+                + New Superadmin <span>★</span>
+              </button>
+              <button
+                type="button"
+                className="button button-light"
+                style={{ minHeight: 44, border: "1px solid var(--line)" }}
+                onClick={() => openCreateAccountModal("admin")}
+              >
+                + New Factory Admin <span>⊞</span>
+              </button>
+              <button
+                type="button"
+                className="button button-dark"
+                style={{ minHeight: 44 }}
+                onClick={() => openCreateAccountModal("staff")}
+              >
+                + New Specialist Account
+              </button>
+            </div>
+          </div>
+
+          {notice && (
+            <div
+              role="status"
+              aria-live="polite"
+              className="mkp-banner mkp-banner-olive"
+              style={{ marginBottom: 20 }}
             >
-              {dbVerifying
-                ? "Verifying NeonDB..."
-                : "Verify NeonDB Schema"}{" "}
-              <span>⚡</span>
-            </button>
-            <button
-              type="button"
-              className="button button-light"
-              style={{ minHeight: 44, border: "1px solid var(--line)" }}
-              onClick={() => openCreateAccountModal("superadmin")}
-            >
-              + New Superadmin <span>★</span>
-            </button>
-            <button
-              type="button"
-              className="button button-light"
-              style={{ minHeight: 44, border: "1px solid var(--line)" }}
-              onClick={() => openCreateAccountModal("admin")}
-            >
-              + New Factory Admin <span>⊞</span>
-            </button>
-            <button
-              type="button"
-              className="button button-dark"
-              style={{ minHeight: 44 }}
-              onClick={() => openCreateAccountModal("staff")}
-            >
-              + New Specialist Account
-            </button>
-          </div>
-        </div>
-
-        {notice && (
-          <div
-            role="status"
-            aria-live="polite"
-            className="mkp-banner mkp-banner-olive"
-            style={{ marginBottom: 20 }}
-          >
-            {notice}
-          </div>
-        )}
-
-        {/* 1. GLOBAL ENTERPRISE KPI CARDS */}
-        <div className="kpi-grid-4">
-          <div className="kpi-card">
-            <span className="ticket-label">GLOBAL PRODUCTION GMV (ALL PLANTS)</span>
-            <div className="kpi-value mono">
-              ₦{globalGmv.toLocaleString()}
+              {notice}
             </div>
-            <div className="kpi-sub">
-              {ordersCount} active B2B runs across {branches.length} Lagos facilities
+          )}
+
+          {/* 1. GLOBAL ENTERPRISE KPI CARDS */}
+          <div className="kpi-grid-4">
+            <div className="kpi-card">
+              <span className="ticket-label">GLOBAL PRODUCTION GMV (ALL PLANTS)</span>
+              <div className="kpi-value mono">
+                ₦{globalGmv.toLocaleString()}
+              </div>
+              <div className="kpi-sub">
+                {ordersCount} active B2B runs across {branches.length} Lagos facilities
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <span className="ticket-label">GLOBAL TRUE OPERATING NET PROFIT</span>
+              <div className="kpi-value mono" style={{ color: "var(--ink)" }}>
+                ₦{globalTrueNetProfit.toLocaleString()}
+              </div>
+              <div className="kpi-sub">
+                COGS: ₦{estimatedCogs.toLocaleString()} · OpEx: ₦
+                {globalOpEx.toLocaleString()}
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <span className="ticket-label">FACILITIES &amp; INDUSTRIAL MACHINES</span>
+              <div className="kpi-value mono">
+                {branches.length} Plants · {totalMachines} Looms
+              </div>
+              <div className="kpi-sub">
+                Head Office: 1 Alawode Street, Lagos, Nigeria
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <span className="ticket-label">CLERK RBAC ACCOUNTS</span>
+              <div className="kpi-value mono">{artisans.length} Users</div>
+              <div className="kpi-sub">
+                {superadminCount} Superadmin · {adminCount} Admin · {staffCount}{" "}
+                Staff
+              </div>
             </div>
           </div>
 
-          <div className="kpi-card">
-            <span className="ticket-label">GLOBAL TRUE OPERATING NET PROFIT</span>
-            <div className="kpi-value mono" style={{ color: "var(--ink)" }}>
-              ₦{globalTrueNetProfit.toLocaleString()}
-            </div>
-            <div className="kpi-sub">
-              COGS: ₦{estimatedCogs.toLocaleString()} · OpEx: ₦
-              {globalOpEx.toLocaleString()}
-            </div>
-          </div>
-
-          <div className="kpi-card">
-            <span className="ticket-label">FACILITIES &amp; INDUSTRIAL MACHINES</span>
-            <div className="kpi-value mono">
-              {branches.length} Plants · {totalMachines} Looms
-            </div>
-            <div className="kpi-sub">
-              Head Office: 1 Alawode Street, Lagos, Nigeria
-            </div>
-          </div>
-
-          <div className="kpi-card">
-            <span className="ticket-label">CLERK RBAC ACCOUNTS</span>
-            <div className="kpi-value mono">{artisans.length} Users</div>
-            <div className="kpi-sub">
-              {superadminCount} Superadmin · {adminCount} Admin · {staffCount}{" "}
-              Staff
-            </div>
-          </div>
-        </div>
-
-        {/* 2. GLOBAL CLERK RBAC: SUPERADMIN, ADMIN & STAFF CRUD TABLE */}
-        <div className="workspace-panel" style={{ marginBottom: 24 }}>
+          {/* 2. GLOBAL CLERK RBAC: SUPERADMIN, ADMIN & STAFF CRUD TABLE */}
+          {(activeSection === "overview" || activeSection === "accounts") && (
+            <div className="workspace-panel" style={{ marginBottom: 24 }}>
           <div className="panel-header-row">
             <div>
               <h3>
@@ -1057,8 +1366,10 @@ export default function SuperadminHqPage() {
             </table>
           </div>
         </div>
+          )}
 
-        {/* 3. MULTI-FACILITY FACTORY PERFORMANCE & CRUD MATRIX */}
+          {/* 3. MULTI-FACILITY FACTORY PERFORMANCE & CRUD MATRIX */}
+          {(activeSection === "overview" || activeSection === "facilities") && (
         <div className="workspace-panel" style={{ marginBottom: 24 }}>
           <div className="panel-header-row">
             <div>
@@ -1185,8 +1496,10 @@ export default function SuperadminHqPage() {
             </table>
           </div>
         </div>
+          )}
 
-        {/* 4. RECENT SECURITY & GOVERNANCE AUDIT LOGS */}
+          {/* 4. RECENT SECURITY & GOVERNANCE AUDIT LOGS */}
+          {(activeSection === "overview" || activeSection === "audit") && (
         <div className="workspace-panel">
           <div className="panel-header-row">
             <div>
@@ -1226,26 +1539,36 @@ export default function SuperadminHqPage() {
                 </tr>
               </thead>
               <tbody>
-                {auditLogs.slice(0, 10).map((log) => (
-                  <tr key={log.id}>
-                    <th className="mono" style={{ fontSize: 11 }}>
-                      {new Date(log.createdAt).toLocaleString()}
-                    </th>
-                    <td className="mono">
-                      <strong>{log.action}</strong>
+                {auditLogs.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: "center", padding: 18, color: "var(--muted)" }}>
+                      No governance or QC audit log events recorded yet in this session.
                     </td>
-                    <td>
-                      <strong>{log.actor}</strong> ({log.role})
-                    </td>
-                    <td className="mono">{log.targetRef}</td>
-                    <td>{log.summary}</td>
                   </tr>
-                ))}
+                ) : (
+                  auditLogs.slice(0, 10).map((log) => (
+                    <tr key={log.id}>
+                      <th className="mono" style={{ fontSize: 11 }}>
+                        {new Date(log.createdAt).toLocaleString()}
+                      </th>
+                      <td className="mono">
+                        <strong>{log.action}</strong>
+                      </td>
+                      <td>
+                        <strong>{log.actor}</strong> ({log.role})
+                      </td>
+                      <td className="mono">{log.targetRef}</td>
+                      <td>{log.summary}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </div>
-      </section>
+          )}
+        </section>
+      </div>
 
       {/* CREATE SUPERADMIN / ADMIN / STAFF MODAL */}
       <ModalDialog
